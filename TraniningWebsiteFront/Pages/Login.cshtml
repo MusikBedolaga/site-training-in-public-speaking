@@ -1,0 +1,10 @@
+@page
+@model LoginModel
+
+<h2>Вход</h2>
+
+<form method="post">
+    <input asp-for="Email" placeholder="Email" />
+    <input asp-for="Password" type="password" placeholder="Пароль" />
+    <button type="submit">Войти</button>
+</form>

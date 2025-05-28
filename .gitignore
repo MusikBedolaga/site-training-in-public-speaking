@@ -48,3 +48,4 @@ obj/project.assets.json
 obj/project.nuget.cache
 obj/TrainingWebsiteBack.csproj.nuget.*
 obj/rider.project.*
+wwwroot/

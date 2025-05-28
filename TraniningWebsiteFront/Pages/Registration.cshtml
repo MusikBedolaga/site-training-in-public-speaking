@@ -1,0 +1,104 @@
+@page
+@model RegisterModel
+@{
+    ViewData["Title"] = "Регистрация";
+}
+
+<div class="container">
+    <h1 class="title">Регистрация</h1>
+
+    <form method="post" enctype="multipart/form-data" class="form">
+        <input asp-for="Email" class="input" placeholder="Введите email" />
+        <span asp-validation-for="Email" class="text-danger"></span>
+
+        <input asp-for="FullName" class="input" placeholder="ФИО" />
+        <span asp-validation-for="FullName" class="text-danger"></span>
+
+        <input asp-for="Password" class="input" placeholder="Пароль" type="password" />
+        <span asp-validation-for="Password" class="text-danger"></span>
+
+        <div class="photo-upload">
+            <label asp-for="Photo">Фото</label>
+            <input asp-for="Photo" type="file" class="input" />
+        </div>
+
+        <div class="select-role">
+            <label asp-for="RoleId">Выберите роль</label>
+            <select asp-for="RoleId" asp-items="Model.Roles" class="input">
+                <option value="">-- Выберите --</option>
+            </select>
+            <span asp-validation-for="RoleId" class="text-danger"></span>
+        </div>
+
+        <button type="submit" class="register-btn">Зарегистрироваться</button>
+        <a asp-page="/Login" class="login-btn">Войти</a>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}
+
+<style>
+    .container {
+        background-color: #fde6d8;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        padding: 2rem;
+        font-family: sans-serif;
+    }
+
+    .title {
+        font-size: 2rem;
+        margin-bottom: 1rem;
+    }
+
+    .form {
+        background: #f7e9e9;
+        padding: 2rem;
+        border-radius: 1rem;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 1rem;
+        width: 100%;
+        max-width: 400px;
+    }
+
+    .input {
+        padding: 0.5rem;
+        border-radius: 0.5rem;
+        border: 1px solid #ccc;
+        width: 100%;
+    }
+
+    .photo-upload label,
+    .select-role label {
+        display: block;
+        margin-bottom: 0.3rem;
+        font-weight: bold;
+    }
+
+    .register-btn, .login-btn {
+        background-color: #cd907d;
+        color: white;
+        padding: 0.8rem 1.5rem;
+        border: none;
+        border-radius: 0.6rem;
+        font-weight: bold;
+        text-decoration: none;
+        text-align: center;
+        cursor: pointer;
+    }
+
+    .login-btn {
+        background-color: #b87b6a;
+        margin-top: 0.5rem;
+    }
+
+    .text-danger {
+        color: red;
+        font-size: 0.9rem;
+    }
+</style>

@@ -1,5 +1,6 @@
 ﻿using TrainingWebsiteBack.Services.DataBase;
 using TrainingWebsiteBack.Models;
+using TrainingWebsiteBack.Services.Network;
 
 namespace TrainingWebsiteBack;
 
@@ -10,8 +11,11 @@ public class Program
         Console.WriteLine("Проверка подключения...");
         
         var dbService = DataBaseService.Instance;
-
-        await dbService.AddNewReviewAsync("Крутой сайт");
-        await dbService.AddNewReviewAsync("Вау!!! Оно работает");
+        var network = NetworkService.Instance;
+        
+        await network.StartAsync();
+        
+        Console.WriteLine("Сервер запущен. Нажмите Enter для остановки.");
+        Console.ReadLine();
     }
 }
