@@ -1,11 +1,17 @@
-﻿// See https://aka.ms/new-console-template for more information
+﻿using TrainingWebsiteBack.Services.DataBase;
+using TrainingWebsiteBack.Models;
 
 namespace TrainingWebsiteBack;
 
 public class Program
 {
-    static void Main(string[] args)
+    static async Task Main(string[] args)
     {
-        Console.WriteLine("Hello");
+        Console.WriteLine("Проверка подключения...");
+        
+        var dbService = DataBaseService.Instance;
+
+        await dbService.AddNewReviewAsync("Крутой сайт");
+        await dbService.AddNewReviewAsync("Вау!!! Оно работает");
     }
 }

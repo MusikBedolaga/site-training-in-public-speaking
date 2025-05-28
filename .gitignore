@@ -1,0 +1,50 @@
+## .NET Core
+bin/
+obj/
+*.nupkg
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+.vs/
+.vscode/
+.DS_Store
+
+## Rider IDE
+.idea/
+*.sln.iml
+
+## Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+[Bb]uild/
+bld/
+[Oo]bj/
+[Ll]og/
+
+## NuGet
+.nuget/
+packages/
+nuget.exe
+
+## Local development files
+appsettings.Development.json
+appsettings.Local.json
+*.db
+*.db-shm
+*.db-wal
+
+## Test results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# Ваши специфичные файлы (из git status)
+/TrainingWebsite/obj/
+/TrainingWebsite/bin/
+obj/Debug/
+obj/project.assets.json
+obj/project.nuget.cache
+obj/TrainingWebsiteBack.csproj.nuget.*
+obj/rider.project.*
