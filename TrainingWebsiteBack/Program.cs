@@ -10,7 +10,6 @@ public class Program
     {
         Console.WriteLine("Проверка подключения...");
         
-        var dbService = DataBaseService.Instance;
         var network = NetworkService.Instance;
         
         await network.StartAsync();

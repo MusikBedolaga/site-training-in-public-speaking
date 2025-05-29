@@ -7,9 +7,13 @@ var builder = WebApplication.CreateBuilder(args);
 // Регистрация NetworkClient
 builder.Services.AddSingleton<NetworkClient>(_ => new NetworkClient("127.0.0.1", 8000));
 
-// Подключение к базе
+// AppDbContext
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
+
+// Подключение к базе
+builder.Services.AddScoped<DataBaseService>();
+
 
 builder.Services.AddRazorPages(options =>
 {

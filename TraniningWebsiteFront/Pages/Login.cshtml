@@ -1,10 +1,100 @@
 @page
 @model LoginModel
+@{
+    Layout = null;
+}
 
-<h2>Вход</h2>
+@if (!ViewData.ModelState.IsValid)
+{
+    <div class="error-message">
+        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+        {
+            <p>@error.ErrorMessage</p>
+        }
+    </div>
+}
 
-<form method="post">
-    <input asp-for="Email" placeholder="Email" />
-    <input asp-for="Password" type="password" placeholder="Пароль" />
-    <button type="submit">Войти</button>
-</form>
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="utf-8" />
+    <title>Войти в аккаунт</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background-color: #ffe4cc;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .auth-container {
+            background-color: #fceeee;
+            padding: 50px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            width: 400px;
+            text-align: center;
+        }
+
+        .auth-container h2 {
+            font-size: 32px;
+            margin-bottom: 30px;
+            font-weight: bold;
+        }
+
+        input[type="text"],
+        input[type="password"] {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            border: 1px solid #d9b6aa;
+            border-radius: 10px;
+            font-size: 16px;
+        }
+
+        button {
+            width: 100%;
+            padding: 15px;
+            font-size: 18px;
+            background-color: #d29a8a;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #b87e6f;
+        }
+
+        .secondary-button {
+            margin-top: 20px;
+            background-color: #e7b9aa;
+            color: #3a2e2a;
+        }
+
+        .secondary-button:hover {
+            background-color: #d6a59a;
+        }
+    </style>
+</head>
+<body>
+    <div class="auth-container">
+        <h2>Войти в аккаунт</h2>
+        <form method="post">
+            <input asp-for="Email" type="text" placeholder="Введите email" />
+            <input asp-for="Password" type="password" placeholder="Введите пароль" />
+            <button type="submit">Войти</button>
+        </form>
+        <form method="get" asp-page="/Register">
+            <button type="submit" class="secondary-button">Создать аккаунт</button>
+        </form>
+    </div>
+</body>
+</html>
