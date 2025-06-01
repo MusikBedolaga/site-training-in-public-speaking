@@ -1,0 +1,97 @@
+@page "{id:int}"
+@model TraniningWebsiteFront.Pages.PagesUser.LectureModel
+@{
+    Layout = "_LayoutUser";
+    ViewData["Title"] = "Экран Лекции";
+}
+
+<style>
+    .container-lecture {
+        padding: 2rem;
+        background-color: #ffeada;
+        font-family: sans-serif;
+        min-height: 80vh; /* чтобы футер был внизу */
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .lecture-title {
+        text-align: center;
+        font-size: 1.8rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+    }
+
+    .lecture-content {
+        background-color: #eac5b4;
+        padding: 1.5rem;
+        border-radius: 8px;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        color: #333;
+        margin-bottom: 2rem;
+    }
+
+    .lecture-buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    .btn-lecture {
+        padding: 0.8rem 2rem;
+        background-color: #d18c7f;
+        color: white;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+    }
+
+    .btn-lecture:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+</style>
+
+<div class="container-lecture">
+    <!-- Название темы/лекции -->
+    <div class="lecture-title">
+        @Model.SelectedLecture?.Title
+    </div>
+
+    <!-- Блок с содержимым лекции -->
+    <div class="lecture-content">
+        @Model.SelectedLecture?.Content
+    </div>
+
+    <div class="lecture-buttons">
+        <!-- Кнопка «Уйти» (возврат на страницу курса) -->
+        <a asp-page="/PagesUser/Course"
+           asp-route-id="@Model.SelectedLecture.CourseId"
+           class="btn-lecture">
+            Уйти
+        </a>
+
+        <!-- Кнопка «Дальше»: если NextLectureId != null, она ведёт дальше -->
+        @if (Model.NextLectureId.HasValue)
+        {
+            <a asp-page="/PagesUser/Lecture"
+               asp-route-id="@Model.NextLectureId.Value"
+               class="btn-lecture">
+                Дальше
+            </a>
+        }
+        else
+        {
+            <!-- Если следующей лекции нет, показываем неактивную кнопку -->
+            <button class="btn-lecture" disabled>Дальше</button>
+        }
+    </div>
+</div>

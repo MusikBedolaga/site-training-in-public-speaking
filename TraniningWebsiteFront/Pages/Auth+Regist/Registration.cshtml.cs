@@ -5,8 +5,8 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
-using TrainingWebsiteBack.Models;
 using TrainingWebsiteBack.Services.DataBase;
+using TrainingWebsiteBack.Models;
 
 namespace TraniningWebsiteFront.Pages;
 
@@ -103,7 +103,7 @@ public class RegisterModel : PageModel
 
         await _networkClient.SendCommandAsync($"NEW_USER:{Email}");
 
-        return RedirectToPage("/Login");
+        return RedirectToPage("/Auth+Regist/Login");
     }
 
     private string HashPassword(string password)

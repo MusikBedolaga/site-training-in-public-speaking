@@ -1,0 +1,103 @@
+@page "{id:int}"
+@model TraniningWebsiteFront.Pages.PagesUser.QuizModel
+@{
+    Layout = "_LayoutUser";
+    ViewData["Title"] = "Экран Теста";
+}
+
+<form method="post" class="container-quiz">
+    <!-- Название теста или вопроса -->
+    <div class="quiz-title">
+        @Model.SelectedQuiz?.Title
+    </div>
+
+    <!-- Содержимое вопроса -->
+    <div class="quiz-question">
+        @Model.SelectedQuiz?.Content
+    </div>
+
+    <div class="quiz-buttons">
+        <!-- Уйти — возврат к курсу -->
+        <a asp-page="/PagesUser/Course"
+           asp-route-id="@Model.SelectedQuiz.CourseId"
+           class="btn-page">
+            Уйти
+        </a>
+
+        <!-- Сохранить -->
+        <button type="submit" class="btn-page">
+            Сохранить
+        </button>
+
+        <!-- Дальше -->
+        @if (Model.NextQuizId.HasValue)
+        {
+            <a asp-page="/PagesUser/Lecture"
+               asp-route-id="@Model.NextQuizId.Value"
+               class="btn-page">
+                Дальше
+            </a>
+        }
+        else
+        {
+            <button class="btn-page" disabled>Дальше</button>
+        }
+    </div>
+</form>
+
+<style>
+    .container-quiz {
+        padding: 2rem;
+        background-color: #ffeada;
+        font-family: sans-serif;
+        min-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .quiz-title {
+        text-align: center;
+        font-size: 1.8rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+    }
+
+    .quiz-question {
+        background-color: #eac5b4;
+        padding: 1.5rem;
+        border-radius: 8px;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        color: #333;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .quiz-buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* 🔁 Единый стиль кнопок */
+    .btn-page {
+        padding: 0.8rem 2rem;
+        background-color: #d18c7f;
+        color: white;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+    }
+
+    .btn-page:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+</style>

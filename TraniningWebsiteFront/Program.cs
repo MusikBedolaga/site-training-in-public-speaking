@@ -1,35 +1,42 @@
-using TrainingWebsiteBack.Services.DataBase;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
+using TrainingWebsiteBack.Services.DataBase;
 using TraniningWebsiteFront;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Регистрация NetworkClient
+// NetworkClient
 builder.Services.AddSingleton<NetworkClient>(_ => new NetworkClient("127.0.0.1", 8000));
 
-// AppDbContext
+// DbContext и DataBaseService
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-// Подключение к базе
 builder.Services.AddScoped<DataBaseService>();
 
-
+// RazorPages + маршруты
 builder.Services.AddRazorPages(options =>
 {
-    options.Conventions.AddPageRoute("/Registration", "");
+    options.Conventions.AddPageRoute("/Auth+Regist/Registration", "");
     options.Conventions.AddPageRoute("/Index", "IndexPage");
 });
 
-var app = builder.Build();
+// Аутентификация с куками
+builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+    .AddCookie(options =>
+    {
+        options.LoginPath = "/Auth+Regist/Login";
+        options.Cookie.Name = "UserAuthCookie";
+    });
 
-// Тестовый запрос при запуске
-// var networkClient = app.Services.GetRequiredService<NetworkClient>();
-// var response = await networkClient.SendCommandAsync("GET_USERS");
-// Console.WriteLine($"Ответ сервера: {response}");
+builder.Services.AddAuthorization();
+
+var app = builder.Build();
 
 app.UseStaticFiles();
 app.UseRouting();
-app.MapRazorPages();
+app.UseAuthentication();
+app.UseAuthorization();
 
+app.MapRazorPages();
 app.Run();
