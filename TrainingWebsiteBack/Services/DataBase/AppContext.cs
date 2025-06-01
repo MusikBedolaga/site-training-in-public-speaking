@@ -11,6 +11,10 @@ public class AppDbContext : DbContext
     public DbSet<Role> Roles { get; set; }
     public DbSet<Course> Courses { get; set; }
     public DbSet<Reviews> Reviews { get; set; }
+    
+    public DbSet<Lecture> Lectures { get; set; }
+    
+    public DbSet<Quiz>  Quizzes { get; set; }
         
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
