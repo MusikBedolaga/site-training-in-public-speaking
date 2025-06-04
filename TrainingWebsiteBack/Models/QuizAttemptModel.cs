@@ -13,7 +13,6 @@ public class QuizAttempt
     [ForeignKey("Quiz")]
     public int QuizId { get; set; }
 
-    [Required]
     public Quiz Quiz { get; set; }
 
     [Required]

@@ -183,5 +183,31 @@ namespace TrainingWebsiteBack.Services.DataBase
                 .OrderBy(q => q.Id)
                 .FirstOrDefaultAsync();
         }
+        
+        //MARK: QuizAttempt
+        public async Task AddQuizAttemptAsync(QuizAttempt attempt)
+        {
+            if (attempt == null) throw new ArgumentNullException(nameof(attempt));
+            
+            await _context.AddAsync(attempt);
+            await _context.SaveChangesAsync();
+        }
+        
+        public async Task AddQuizAttemptAsync(
+            int quizId,
+            string answer,
+            string description = "")
+        {
+            var attempt = new QuizAttempt
+            {
+                QuizId = quizId,
+                Attempt = answer,
+                Description = description,
+            };
+            
+            await _context.AddAsync(attempt);
+            await _context.SaveChangesAsync();
+        }
+        
     }
 }

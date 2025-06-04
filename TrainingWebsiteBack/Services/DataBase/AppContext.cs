@@ -11,11 +11,9 @@ public class AppDbContext : DbContext
     public DbSet<Role> Roles { get; set; }
     public DbSet<Course> Courses { get; set; }
     public DbSet<Reviews> Reviews { get; set; }
-    
     public DbSet<Lecture> Lectures { get; set; }
-    
     public DbSet<Quiz>  Quizzes { get; set; }
-        
+    
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         // Настройка связи Role (1) → Users (Many)
@@ -68,17 +66,13 @@ public class AppDbContext : DbContext
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
         
-        // Настройка связи 1:1 между Quiz и QuizAttempt
+        // Настройка связи 1:M между Quiz и QuizAttempt
         modelBuilder.Entity<Quiz>()
-            .HasOne(q => q.Attempt)
-            .WithOne()
-            .HasForeignKey<QuizAttempt>(a => a.QuizId)
+            .HasMany(q => q.Attempts)
+            .WithOne(a => a.Quiz)
+            .HasForeignKey(a => a.QuizId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
-        
-        modelBuilder.Entity<QuizAttempt>()
-            .HasIndex(a => a.QuizId)
-            .IsUnique();  // Гарантирует 1:1 связь
         
         // Настройка связи M:N через UserAchievement
         modelBuilder.Entity<UserAchievement>()
