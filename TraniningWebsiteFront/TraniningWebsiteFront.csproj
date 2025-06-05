@@ -18,4 +18,8 @@
       <Compile Remove="Pages\User.cshtml.cs" />
     </ItemGroup>
 
+    <ItemGroup>
+      <Folder Include="Pages\Teacher\" />
+    </ItemGroup>
+
 </Project>

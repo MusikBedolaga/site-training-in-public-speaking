@@ -45,20 +45,13 @@ public class LoginModel : PageModel
         var role = await _dataBaseService.GetRoleAsync(user);
 
         // надо будет поменять страницы
-        switch (role.Name)
+        return role.Name switch
         {
-            case RoleEnum.User:
-                return RedirectToPage("/Registration");
-
-            case RoleEnum.Teacher:
-                return RedirectToPage("/Registration");
-
-            case RoleEnum.Admin:
-                return RedirectToPage("/Registration");
-
-            default:
-                return RedirectToPage("/Registration");
-        }
+            RoleEnum.User => RedirectToPage("/PagesUser/Home"),
+            RoleEnum.Teacher => RedirectToPage("/PagesTeacher/Home"),
+            RoleEnum.Admin => RedirectToPage("/PagesAdmin/Home"),
+            _ => RedirectToPage("/Index")
+        };
     }
 }
 
