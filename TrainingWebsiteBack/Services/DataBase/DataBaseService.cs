@@ -125,6 +125,34 @@ namespace TrainingWebsiteBack.Services.DataBase
             await _context.SaveChangesAsync();
         }
         
+        //MARK: CourseSubscriptions
+        public async Task<bool> SubscribeToCourseAsync(int userId, int courseId)
+        {
+            var user = await _context.Users.Include(u => u.SubscribedCourses).FirstOrDefaultAsync(u => u.Id == userId);
+            var course = await _context.Courses.FirstOrDefaultAsync(c => c.Id == courseId);
+
+            if (user == null || course == null)
+                return false;
+
+            if (!user.SubscribedCourses.Any(c => c.Id == courseId))
+            {
+                user.SubscribedCourses.Add(course);
+                await _context.SaveChangesAsync();
+            }
+
+            return true;
+        }
+        
+        public async Task<bool> IsUserSubscribedToCourseAsync(int userId, int courseId)
+        {
+            var user = await _context.Users
+                .Include(u => u.SubscribedCourses)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+            if (user == null) return false;
+            return user.SubscribedCourses.Any(c => c.Id == courseId);
+        }
+
+        
         //MARK: Lecture
         public async Task AddLecturerAsync(Lecture lecturer)
         {
@@ -196,12 +224,14 @@ namespace TrainingWebsiteBack.Services.DataBase
         public async Task AddQuizAttemptAsync(
             int quizId,
             string answer,
+            int userId,
             string description = "")
         {
             var attempt = new QuizAttempt
             {
                 QuizId = quizId,
                 Attempt = answer,
+                UserId = userId,
                 Description = description,
             };
             

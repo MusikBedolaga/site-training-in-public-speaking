@@ -14,6 +14,11 @@ public class QuizAttempt
     public int QuizId { get; set; }
 
     public Quiz Quiz { get; set; }
+    
+    [Required]
+    public int UserId { get; set; }
+
+    public User User { get; set; }
 
     [Required]
     [MaxLength(256)]

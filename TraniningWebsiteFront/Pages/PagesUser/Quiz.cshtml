@@ -5,31 +5,50 @@
     ViewData["Title"] = "Экран Теста";
 }
 
+@if (TempData["SubscriptionAlert"] != null)
+{
+    <script>
+        alert('@TempData["SubscriptionAlert"]');
+    </script>
+}
+
 <form method="post" class="container-quiz">
-    <!-- Название теста или вопроса -->
+    <!-- Заголовок вопроса -->
     <div class="quiz-title">
         @Model.SelectedQuiz?.Title
     </div>
 
-    <!-- Содержимое вопроса -->
+    <!-- Вопрос -->
     <div class="quiz-question">
         @Model.SelectedQuiz?.Content
     </div>
 
+    <!-- Поле ввода ответа -->
+    <div class="quiz-answer">
+        <label for="Answer" class="answer-label">Ваш ответ:</label>
+        <textarea id="Answer" name="Answer" class="answer-input" rows="4"></textarea>
+    </div>
+    
+
+    @if (Model.IsCorrectAnswer.HasValue)
+    {
+        <div class="quiz-result @(Model.IsCorrectAnswer.Value ? "correct" : "incorrect")">
+            @(Model.IsCorrectAnswer.Value ? "Верно!" : "Неверно. Попробуйте снова.")
+        </div>
+    }
+
+    <!-- Кнопки -->
     <div class="quiz-buttons">
-        <!-- Уйти — возврат к курсу -->
         <a asp-page="/PagesUser/Course"
            asp-route-id="@Model.SelectedQuiz.CourseId"
            class="btn-page">
             Уйти
         </a>
 
-        <!-- Сохранить -->
         <button type="submit" class="btn-page">
             Сохранить
         </button>
 
-        <!-- Дальше -->
         @if (Model.NextQuizId.HasValue)
         {
             <a asp-page="/PagesUser/Lecture"
@@ -44,6 +63,7 @@
         }
     </div>
 </form>
+
 
 <style>
     .container-quiz {
@@ -100,4 +120,62 @@
         background-color: #ccc;
         cursor: not-allowed;
     }
+
+    .quiz-answer {
+        margin-top: 1rem;
+        margin-bottom: 2rem;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .answer-label {
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        color: #333;
+    }
+
+    .answer-input {
+        padding: 1rem;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 1rem;
+        resize: vertical;
+        background-color: #fff7f2;
+        color: #333;
+    }
+
+    .quiz-result {
+        text-align: center;
+        font-size: 1.2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .result-correct {
+        color: green;
+        font-weight: bold;
+    }
+
+    .result-incorrect {
+        color: red;
+        font-weight: bold;
+    }
+
+    .quiz-result {
+        margin-top: 1rem;
+        font-weight: bold;
+        padding: 1rem;
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    .correct {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .incorrect {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
 </style>

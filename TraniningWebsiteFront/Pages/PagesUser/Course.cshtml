@@ -23,7 +23,14 @@
                 <div class="progress-bar-inner">@Model.Progress% выполнено</div>
             </div>
             <form method="post">
-                <button class="subscribe-btn">Подписаться</button>
+                @if (Model.IsSubscribed)
+                {
+                    <button class="subscribe-btn" disabled>Вы подписаны</button>
+                }
+                else
+                {
+                    <button class="subscribe-btn">Подписаться</button>
+                }
             </form>
         </div>
     </div>
@@ -75,18 +82,16 @@
             }
         </div>
     </div>
-
 </div>
 
+
 <style>
-    /* Основные отступы и фон */
     .container {
         padding: 2rem;
         background-color: #ffeada;
         font-family: sans-serif;
     }
-
-    /* Заголовок курса */
+    
     .course-title {
         text-align: center;
         font-size: 2rem;
@@ -94,7 +99,6 @@
         margin-bottom: 2rem;
     }
 
-    /* Блок с описанием курса и правой панелью */
     .course-overview {
         display: flex;
         justify-content: space-between;
@@ -128,7 +132,6 @@
         height: 1.5rem;
     }
 
-    /* Ширина заполнения прогресса можно подставлять динамически из модели */
     .progress-bar-inner {
         width: @((Model.Progress).ToString())%;
         background-color: #dba89b;

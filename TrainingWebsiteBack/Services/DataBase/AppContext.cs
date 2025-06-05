@@ -89,5 +89,13 @@ public class AppDbContext : DbContext
             .WithMany(a => a.UserAchievements)
             .HasForeignKey(ua => ua.AchievementId)
             .OnDelete(DeleteBehavior.Cascade);
+        
+        // Связь QuizAttempt → User
+        modelBuilder.Entity<QuizAttempt>()
+            .HasOne(a => a.User)
+            .WithMany()
+            .HasForeignKey(a => a.UserId)
+            .IsRequired()
+            .OnDelete(DeleteBehavior.Cascade);
     }
 }
