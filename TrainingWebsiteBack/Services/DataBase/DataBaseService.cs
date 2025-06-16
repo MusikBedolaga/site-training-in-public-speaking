@@ -105,8 +105,25 @@ namespace TrainingWebsiteBack.Services.DataBase
             _context.Reviews.Remove(review);
             await _context.SaveChangesAsync();
         }
-        
+
         //MARK: Course
+        public async Task<List<Course>> GetAllUserCoursesAsync(int userId)
+        {
+            var user = await _context.Users
+                .Include(u => u.CreatedCourses)
+                .FirstOrDefaultAsync(u => u.Id == userId);
+
+            if (user == null) return new List<Course>();
+
+            // Объединить созданные и подписанные курсы без дубликатов
+            var allCourses = user.CreatedCourses
+                .Concat(user.SubscribedCourses)
+                .Distinct()
+                .ToList();
+
+            return allCourses;
+        }
+
         public async Task<List<Course>> GetAllCoursesAsync()
         {
             return await _context.Courses.ToListAsync();
@@ -116,7 +133,7 @@ namespace TrainingWebsiteBack.Services.DataBase
         {
             return await _context.Courses.FindAsync(courseId);
         }
-        
+
         public async Task DeleteCourseAsync(int courseId)
         {
             var course = await _context.Courses.FindAsync(courseId);
@@ -124,7 +141,50 @@ namespace TrainingWebsiteBack.Services.DataBase
             _context.Courses.Remove(course);
             await _context.SaveChangesAsync();
         }
-        
+
+        public async Task UpdateCourseAsync(Course course)
+        {
+            try
+            {
+                // Найти существующий курс по ID
+                var existingCourse = await _context.Courses.FindAsync(course.Id);
+
+                if (existingCourse == null)
+                {
+                    // Если курс не найден, логируем и выбрасываем исключение
+                    Console.WriteLine($"Курс с ID {course.Id} не найден.");
+                    throw new ArgumentException("Курс не найден");
+                }
+
+                // Обновляем данные курса
+                Console.WriteLine($"Обновляем курс: старое название - {existingCourse.Name}, новое название - {course.Name}");
+                existingCourse.Name = course.Name;
+                existingCourse.Description = course.Description;
+
+                // Уведомляем контекст о том, что объект был изменен
+                _context.Entry(existingCourse).State = EntityState.Modified;
+
+                // Сохраняем изменения в базе данных
+                await _context.SaveChangesAsync();
+                Console.WriteLine("Изменения сохранены.");
+            }
+            catch (Exception ex)
+            {
+                // Логируем исключение
+                Console.WriteLine($"Ошибка при обновлении курса: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task<Course> AddCourseAsync(Course course)
+        {
+            if (course == null) throw new ArgumentNullException(nameof(course));
+
+            await _context.Courses.AddAsync(course);
+            await _context.SaveChangesAsync();
+            return course;
+        }
+
         //MARK: CourseSubscriptions
         public async Task<bool> SubscribeToCourseAsync(int userId, int courseId)
         {
@@ -158,7 +218,7 @@ namespace TrainingWebsiteBack.Services.DataBase
         {
             if (lecturer == null) throw new ArgumentNullException(nameof(lecturer));
             
-            _context.AddAsync(lecturer);
+            await _context.Lectures.AddAsync(lecturer);
             await _context.SaveChangesAsync();
         }
         
@@ -181,14 +241,57 @@ namespace TrainingWebsiteBack.Services.DataBase
                 .OrderBy(l => l.Id)
                 .FirstOrDefaultAsync();
         }
-        
-        
+
+        public async Task UpdateLectureAsync(Lecture lecture)
+        {
+            try
+            {
+                // Найти существующий курс по ID
+                var existingLecture = await _context.Lectures.FindAsync(lecture.Id);
+
+                if (existingLecture == null)
+                {
+                    // Если курс не найден, логируем и выбрасываем исключение
+                    Console.WriteLine($"Лекция с ID {lecture.Id} не найден.");
+                    throw new ArgumentException("Курс не найден");
+                }
+
+                // Обновляем данные курса
+                Console.WriteLine($"Обновляем лекции: старое название - {existingLecture.Title}, новое название - {lecture.Title}");
+                existingLecture.Title = lecture.Title;
+                existingLecture.Content = lecture.Content;
+
+                // Уведомляем контекст о том, что объект был изменен
+                _context.Entry(existingLecture).State = EntityState.Modified;
+
+                // Сохраняем изменения в базе данных
+                await _context.SaveChangesAsync();
+                Console.WriteLine("Изменения сохранены.");
+            }
+            catch (Exception ex)
+            {
+                // Логируем исключение
+                Console.WriteLine($"Ошибка при обновлении лекции: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task DeleteLectureAsync(int lectureId)
+        {
+            var lecture = await _context.Lectures.FindAsync(lectureId);
+            if (lecture != null)
+            {
+                _context.Lectures.Remove(lecture);
+                await _context.SaveChangesAsync();
+            }
+        }
+
         //MARK: Quiz 
         public async Task AddQuizAsync(Quiz quiz)
         {
             if (quiz == null) throw new ArgumentNullException(nameof(quiz));
             
-            _context.AddAsync(quiz);
+            _context.Quizzes.AddAsync(quiz);
             await _context.SaveChangesAsync();  
         }
         
@@ -211,7 +314,51 @@ namespace TrainingWebsiteBack.Services.DataBase
                 .OrderBy(q => q.Id)
                 .FirstOrDefaultAsync();
         }
-        
+        public async Task UpdateQuizAsync(Quiz quiz)
+        {
+            try
+            {
+                // Найти существующий quiz по ID
+                var existingQuiz = await _context.Quizzes.FindAsync(quiz.Id);
+
+                if (existingQuiz == null)
+                {
+                    // Если quiz не найден, логируем и выбрасываем исключение
+                    Console.WriteLine($"Test с ID {quiz.Id} не найден.");
+                    throw new ArgumentException("Курс не найден");
+                }
+
+                // Обновляем данные quiz
+                Console.WriteLine($"Обновляем test: старое название - {existingQuiz.Title}, новое название - {quiz.Title}");
+                existingQuiz.Title = quiz.Title;
+                existingQuiz.Content = quiz.Content;
+                existingQuiz.CorrectAnswer = quiz.CorrectAnswer;
+
+                // Уведомляем контекст о том, что объект был изменен
+                _context.Entry(existingQuiz).State = EntityState.Modified;
+
+                // Сохраняем изменения в базе данных
+                await _context.SaveChangesAsync();
+                Console.WriteLine("Изменения сохранены.");
+            }
+            catch (Exception ex)
+            {
+                // Логируем исключение
+                Console.WriteLine($"Ошибка при обновлении testa: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task DeleteQuizAsync(int quizId)
+        {
+            var quiz = await _context.Quizzes.FindAsync(quizId);
+            if (quiz != null)
+            {
+                _context.Quizzes.Remove(quiz);
+                await _context.SaveChangesAsync();
+            }
+        }
+
         //MARK: QuizAttempt
         public async Task AddQuizAttemptAsync(QuizAttempt attempt)
         {

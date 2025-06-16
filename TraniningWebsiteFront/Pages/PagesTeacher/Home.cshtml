@@ -1,0 +1,102 @@
+﻿@page
+@model TraniningWebsiteFront.Pages.PagesTeacher.HomeModel
+@{
+    Layout = "_LayoutTeacher";
+    ViewData["Title"] = "Главная";
+}
+
+<main>
+    <section class="tasks">
+        <h1>Мои задания</h1>
+        
+        <form method="get" asp-page="/PagesTeacher/CreateCourse">
+            <button type="submit" class="create-course">Создать курс</button>
+        </form>
+        
+        <div class="course-list">
+            <h2>Список моих курсов</h2>
+        
+             <div class="course-list">
+                @if (Model.Courses.Any())
+                {
+                    @foreach (var course in Model.Courses)
+                    {
+                        <div class="course">
+                            <a asp-page="/PagesTeacher/ExistCourse" asp-route-id="@course.Id" class="card-link">
+                                <h2>@course.Name</h2>
+                                <p>@course.Description</p>
+                            </a>
+                            <div class="course-actions">
+                                <form method="get" asp-page="/PagesTeacher/ExistCourse" asp-route-id="@course.Id">
+                                    <button type="submit">редактировать</button>
+                                </form>
+                                <form method="post" asp-page-handler="Delete" asp-route-id="@course.Id">
+                                    <button type="submit">удалить</button>
+                                </form>
+                            </div>
+                        </div>
+                    }
+                 }
+             </div>
+        </div>
+    </section>
+</main>
+
+<style>  
+    main {
+        flex: 1;
+    }
+
+    .course-list {
+        background: #b0caba;
+        padding: 20px;
+
+        border-radius: 12px;
+        display: flex;
+        flex-direction: column;
+        gap: 15px;
+    }
+
+    .course {
+        background-color: #f0cabe;
+        border: 2px solid #d3a9a0;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+        .course h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+    .create-course{
+        margin-bottom: 10px;
+    }
+
+    .course-actions {
+        display: flex;
+        gap: 10px;
+        margin-top: 10px;
+    }
+
+    .card-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+    }
+
+    button {
+        background-color: #e7c3c3;
+        border: none;
+        padding: 10px 20px;
+        cursor: pointer;
+        border-radius: 8px;
+        font-weight: bold;
+    }
+
+        button:hover {
+            background-color: #d9a5a5;
+        }
+
+</style>

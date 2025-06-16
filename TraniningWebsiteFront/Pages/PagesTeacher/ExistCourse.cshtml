@@ -1,0 +1,170 @@
+﻿    @page "{id:int}"
+    @model TraniningWebsiteFront.Pages.PagesTeacher.CourseModel
+    @{
+        Layout = "_LayoutTeacher";
+        ViewData["Title"] = "Редактировать курс";
+    }
+
+    <div class="course">
+        @if(Model.Course != null)
+        {
+            <!-- Просмотр -->
+            <div id="viewMode">
+                <h1>@Model.Course.Name</h1>
+                <button class="edit-button" onclick="toggleEdit(true)">редактировать</button>
+                <div class="course-description">
+                    <p>@Model.Course.Description</p>
+                    <button class="edit-button" onclick="toggleEdit(true)">редактировать</button>
+                </div>
+            </div>
+            <div class="button-wrapper">
+            <div class="button-wrapper">
+                <!-- Измените ссылку на использование простого URL -->
+                    <!-- Или если предпочитаете форму -->
+                <form method="get" action="/PagesTeacher/CreateLecture">
+                    <input type="hidden" name="courseId" value="@Model.Course.Id" />
+                    <button type="submit">Добавить лекцию</button>
+                </form>
+                <form method="get" asp-page="/PagesTeacher/CreateQuiz">
+                    <input type="hidden" name="courseId" value="@Model.Course.Id" />
+                    <button type="submit">Добавить тест</button>
+                </form>
+            </div>
+        </div>
+            <!-- Редактирование -->
+            <form method="post" id="editMode" style="display:none">
+                <input type="hidden" asp-for="Course.Id" />
+                <input asp-for="Course.Name" class="input-field" placeholder="Название курса" />
+                <textarea asp-for="Course.Description" class="textarea-field" placeholder="Описание курса"></textarea>
+                <button type="submit" class="edit-button">Сохранить</button>
+                <button type="button" class="delete-button" onclick="toggleEdit(false)">Отмена</button>
+            </form>
+            <div class="lectures">
+                <h2 class="lecture">Лекции</h2>
+                @if (Model.Lectures != null && Model.Lectures.Any())
+                {
+                    <div class="lectures-container">
+                        @foreach (var lecture in Model.Lectures)
+                        {
+                            <div class="lecture-card button-wrapper">
+                                <h3>@lecture.Title</h3>
+                                <p>@lecture.Content</p>
+                                <form method="get" id="editMode" action="/PagesTeacher/EditLecture">
+                                    <input type="hidden" name="lectureId" value="@lecture.Id" />
+                                    <button type="submit">Редактировать</button>
+                                </form>
+                            </div>
+                        }
+                    </div>
+                }
+                else
+                {
+                    <p>Пока нет лекций. Добавьте первую лекцию!</p>
+                }
+            </div>
+
+    <div class="lectures">
+        <h2 class="lecture">Тесты</h2>
+
+        <!-- Контейнер с тестами -->
+        @if (Model.Quizs != null && Model.Quizs.Any())
+        {
+            <div class="lectures-container">
+                @foreach (var quiz in Model.Quizs)
+                {
+                    <div class="lecture-card button-wrapper">
+                        <h3>@quiz.Title</h3>
+                        <p>@quiz.Content</p>
+                        <p>@quiz.CorrectAnswer</p>
+                        <form method="get" id="editMode" action="/PagesTeacher/EditQuiz">
+                                    <input type="hidden" name="quizId" value="@quiz.Id" />
+                                    <button type="submit">Редактировать</button>
+                        </form>
+                    </div>
+                }
+            </div>
+        }
+        else
+        {
+            <p>Пока нет тестов. Добавьте первый тест!</p>
+        }
+            </div>
+        }
+        else
+        {
+            <h1>Курс не найден</h1>
+        }
+    </div>
+
+
+    <script>
+        function toggleEdit(editing) {
+            document.getElementById('viewMode').style.display = editing ? 'none' : 'block';
+            document.getElementById('editMode').style.display = editing ? 'block' : 'none';
+        }
+    </script>
+
+    <style>
+        .button-wrapper{
+            background-color: #f0cabe;
+        
+            padding: 10px;
+            margin: 0, 5px, 5px, 0;
+            border: 2px solid #D4A6A6; /* Цвет рамки */
+            border-radius: 10px;
+        }
+        .course {
+        background-color: #f0cabe;
+        border: 2px solid #d3a9a0;
+        padding: 20px;
+        border-radius: 10px;
+        box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    }
+
+        .course h2 {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .course-description, .lectures, .tests {
+            background-color: #F8D4C0;
+            margin-bottom: 15px;
+            padding: 10px;
+            border-radius: 5px;
+        }
+
+            .course-description p, .lectures p, .tests p {
+                font-size: 18px;
+                margin: 0;
+            }
+
+        .edit-button{
+            background-color: #F4C0A0;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        .delete-button {
+            background-color: #F4C0A0;
+            color: red;
+            border: none;
+            padding: 5px 10px;
+            cursor: pointer;
+        }
+
+        button {
+        background-color: #e7c3c3;
+        border: none;
+        padding: 10px 20px;
+        margin-top: 5px;
+        margin-bottom: 15px;
+        cursor: pointer;
+        border-radius: 8px;
+        font-weight: bold;
+    }
+
+        button:hover {
+            background-color: #d9a5a5;
+        }
+    </style>

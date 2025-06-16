@@ -1,0 +1,91 @@
+﻿@page
+@model TraniningWebsiteFront.Pages.PagesTeacher.CreateQuizModel
+@{
+    Layout = "_LayoutTeacher";
+    ViewData["Title"] = "Создание теста";
+}
+
+<div class="create-lecture">
+    <h2>Тест для курса: @Model.CourseId</h2>
+
+    <form method="post" id="quizForm" class="form">
+        <input type="hidden" name="courseId" value="@Model.CourseId" />
+
+        <div class="button-wrapper">
+            <input type="text" asp-for="Quiz.Title" class="input-field" placeholder="Введите название теста" />
+            <textarea asp-for="Quiz.Content" class="input-field" placeholder="Введите вопрос"></textarea>
+            <textarea asp-for="Quiz.CorrectAnswer" class="input-field" placeholder="Введите правильный ответ"></textarea>
+            <button type="submit" class="btn btn-primary">Добавить тест</button>
+        </div>
+    </form>
+</div>
+
+<style>
+    /*стили для заголовков*/
+    .lecture, h2.form {
+        text-align: left;
+        border: 0;
+        margin-top: 3px;
+        margin-bottom: 3px;
+    }
+
+    /*стиль для формы*/
+    .form {
+        background-color: #f0cabe;
+        padding: 10px;
+        margin: 5px, 5px, 5px, 0;
+        border: 2px solid #D4A6A6; /* Цвет рамки */
+        border-radius: 10px;
+    }
+
+    /*стиль для блока лекций и тестов*/
+    .button-wrapper {
+        background-color: #f0cabe;
+        padding: 10px;
+        margin: 0, 5px, 5px, 0;
+        border: 2px solid #D4A6A6; /* Цвет рамки */
+        border-radius: 10px;
+    }
+
+    /* Стили для полей ввода */
+    .input-field {
+        width: 90%;
+        padding: 10px;
+        font-size: 16px;
+        border: 2px solid #D4A6A6;
+        border-radius: 12px;
+        background-color: #FFF1F1;
+        transition: border-color 0.3s ease, box-shadow 0.3s ease, transform 0.3s ease;
+        margin-bottom: 4px;
+    }
+
+        .input-field:focus {
+            border-color: #F4A1A1;
+            box-shadow: 0 0 10px rgba(244, 161, 161, 0.6);
+            outline: none;
+            transform: scale(1.03);
+        }
+
+    /* Стили для кнопок */
+    button {
+        margin-right: 10px;
+        margin-bottom: 10px;
+        font-size: 16px;
+        font-weight: bold;
+        border-radius: 8px;
+        padding: 10px 20px;
+        background-color: #D4A6A6;
+        color: white;
+        transition: background-color 0.3s ease, transform 0.2s ease;
+    }
+
+        button:hover {
+            background-color: #E7C3C3;
+            transform: scale(1.05);
+        }
+
+        button:active {
+            background-color: #F4A1A1;
+            transform: scale(1);
+        }
+</style>
