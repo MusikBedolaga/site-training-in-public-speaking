@@ -27,8 +27,11 @@ namespace TraniningWebsiteFront.Pages.PagesTeacher
             if (id.HasValue)
             {
                 Course = await _dataBaseService.GetCourseByIdAsync(id.Value);
-                Lectures = await _dataBaseService.GetLecturesCurrentCourse(id.Value);
-                Quizs = await _dataBaseService.GetQuizzesCurrentCourse(id.Value);
+                if (Course != null)
+                {
+                    Lectures = await _dataBaseService.GetLecturesCurrentCourse(id.Value);
+                    Quizs = await _dataBaseService.GetQuizzesCurrentCourse(id.Value);
+                }
             }
             else
             {
@@ -36,27 +39,23 @@ namespace TraniningWebsiteFront.Pages.PagesTeacher
                 var UserId = int.Parse(userIdClaim.Value);
                 var courses = await _dataBaseService.GetAllUserCoursesAsync(UserId);
                 Course = courses.LastOrDefault();
+
                 if (Course != null)
                 {
                     Lectures = await _dataBaseService.GetLecturesCurrentCourse(Course.Id);
+                    Quizs = await _dataBaseService.GetQuizzesCurrentCourse(Course.Id);
+                }
+                else
+                {
+                    // Р•СЃР»Рё РЅРё РѕРґРёРЅ РєСѓСЂСЃ РЅРµ РЅР°Р№РґРµРЅ вЂ” СЃРѕР·РґР°С‘Рј РІСЂРµРјРµРЅРЅС‹Р№ "РїСѓСЃС‚РѕР№"
+                    Course = new Course { Name = "РќРѕРІС‹Р№ РєСѓСЂСЃ" };
+                    Lectures = new List<Lecture>();
+                    Quizs = new List<Quiz>();
                 }
             }
 
             return Page();
         }
-
-        //public async Task<IActionResult> OnPostAsync()
-        //{
-        //    var userIdClaim = User.FindFirst("UserId");
-        //    var UserId = int.Parse(userIdClaim.Value);
-
-        //    Course.IsCompleted = false;
-        //    Course.CreatorId = UserId;
-        //    // Добавляем курс в базу данных
-
-        //    await _dataBaseService.AddCourseAsync(Course);
-        //    return RedirectToPage("/PagesTeacher/CreateLecture", new { id = Course.Id });
-        //}
 
         public async Task<IActionResult> OnPostAsync()
         {
@@ -66,10 +65,10 @@ namespace TraniningWebsiteFront.Pages.PagesTeacher
             Course.IsCompleted = false;
             Course.CreatorId = UserId;
 
-            // Добавляем курс и получаем созданный объект
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ++
             var createdCourse = await _dataBaseService.AddCourseAsync(Course);
 
-            // Перенаправляем с ID созданного курса
+            // пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ ID пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ
             return RedirectToPage("/PagesTeacher/CreateCourse", new { id = createdCourse.Id });
         }
     }

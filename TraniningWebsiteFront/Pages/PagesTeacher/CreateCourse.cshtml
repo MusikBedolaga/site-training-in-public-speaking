@@ -5,12 +5,19 @@
         ViewData["Title"] = "Создание курса";
     }
 
-    <di class="create-course">
+    <div class="create-course">
         <h2>Мой курс</h2>
 
         <!-- Форма для изменения заголовка -->
         <form method="post" id="courseForm" class="form">
-            <h2 class="form">@Model.Course.Name</h2>
+            @if (Model.Course != null)
+            {
+                <h2 class="form">@Model.Course.Name</h2>
+            }
+            else
+            {
+                <h2 class="form text-danger">Курс не найден</h2>
+            }
         <!-- Описание курса -->
             <div class="button-wrapper">
                 <input type="text" asp-for="Course.Name" class="input-field" placeholder="Введите новое название" />
