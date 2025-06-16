@@ -64,7 +64,11 @@ public class QuizModel : PageModel
         
         await _dataBaseService.AddQuizAttemptAsync(SelectedQuiz.Id, Answer, userId);
 
-        IsCorrectAnswer = (Answer.Trim().Equals(SelectedQuiz.CorrectAnswer?.Trim(), StringComparison.OrdinalIgnoreCase));
+
+        IsCorrectAnswer = Answer.Trim().Equals(
+            SelectedQuiz.CorrectAnswer?.Trim(),
+            StringComparison.OrdinalIgnoreCase
+        );
         IsSubmitted = true;
         
         bool isSubscribed = await _dataBaseService.IsUserSubscribedToCourseAsync(userId, SelectedQuiz.CourseId);

@@ -20,7 +20,7 @@
         <!-- Прогресс и кнопка подписки -->
         <div class="right-panel">
             <div class="progress-bar">
-                <div class="progress-bar-inner">@Model.Progress% выполнено</div>
+                <div class="progress-bar-inner" style="width:@Model.Progress%">@Model.Progress% выполнено</div>
             </div>
             <form method="post">
                 @if (Model.IsSubscribed)
@@ -133,7 +133,6 @@
     }
 
     .progress-bar-inner {
-        width: @((Model.Progress).ToString())%;
         background-color: #dba89b;
         height: 100%;
         text-align: center;

@@ -26,6 +26,13 @@ namespace TraniningWebsiteFront.Pages.PagesUser
             {
                 return NotFound();
             }
+            
+            var userIdClaim = User.FindFirst("UserId");
+            if (userIdClaim != null && int.TryParse(userIdClaim.Value, out var userId))
+            {
+                await _dataBaseService.MarkLectureAsViewed(userId, SelectedLecture.Id);
+            }
+
 
             var next = await _dataBaseService.GetNextLectureAsync(
                 SelectedLecture.CourseId, 
