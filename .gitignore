@@ -41,7 +41,6 @@ appsettings.Local.json
 [Bb]uild[Ll]og.*
 
 # Ваши специфичные файлы (из git status)
-\TraniningWebsiteFront\Program.cs
 /TrainingWebsite/obj/
 /TrainingWebsite/bin/
 obj/Debug/
@@ -50,6 +49,3 @@ obj/project.nuget.cache
 obj/TrainingWebsiteBack.csproj.nuget.*
 obj/rider.project.*
 wwwroot/
-\TraniningWebsiteFront\appsettings.json
-\TrainingWebsiteBack\appsettings.json
-\TrainingWebsiteBack\Program.cs
