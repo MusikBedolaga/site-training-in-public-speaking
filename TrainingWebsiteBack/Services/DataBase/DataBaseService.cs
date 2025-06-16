@@ -213,13 +213,38 @@ namespace TrainingWebsiteBack.Services.DataBase
         }
         
         //MARK: QuizAttempt
-        public async Task AddQuizAttemptAsync(QuizAttempt attempt)
+        public async Task AddQuizAttemptAsync(int quizId, string answer, int userId, bool isCorrect)
         {
-            if (attempt == null) throw new ArgumentNullException(nameof(attempt));
-            
-            await _context.AddAsync(attempt);
+            _context.QuizAttempts.Add(new QuizAttempt
+            {
+                QuizId = quizId,
+                UserId = userId,
+                Attempt = answer,
+                Description = ""
+            });
+
             await _context.SaveChangesAsync();
         }
+        
+        public async Task<int> GetCompletedLectureCount(int userId, int courseId)
+        {
+            return await _context.UserLectures
+                .Where(ul => ul.UserId == userId && ul.Lecture.CourseId == courseId)
+                .CountAsync();
+        }
+
+        public async Task<int> GetPassedQuizCount(int userId, int courseId)
+        {
+            return await _context.QuizAttempts
+                .Where(a => a.UserId == userId &&
+                            a.Quiz.CourseId == courseId &&
+                            a.Attempt.Trim().ToLower() == a.Quiz.CorrectAnswer.Trim().ToLower())
+                .Select(a => a.QuizId)
+                .Distinct()
+                .CountAsync();
+        }
+
+
         
         public async Task AddQuizAttemptAsync(
             int quizId,
@@ -239,5 +264,21 @@ namespace TrainingWebsiteBack.Services.DataBase
             await _context.SaveChangesAsync();
         }
         
+        // MARK: UserLecture
+        public async Task MarkLectureAsViewed(int userId, int lectureId)
+        {
+            bool alreadyViewed = await _context.UserLectures
+                .AnyAsync(ul => ul.UserId == userId && ul.LectureId == lectureId);
+
+            if (!alreadyViewed)
+            {
+                _context.UserLectures.Add(new UserLecture
+                {
+                    UserId = userId,
+                    LectureId = lectureId
+                });
+                await _context.SaveChangesAsync();
+            }
+        }
     }
 }

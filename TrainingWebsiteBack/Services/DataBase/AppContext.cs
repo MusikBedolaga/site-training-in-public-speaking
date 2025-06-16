@@ -13,6 +13,8 @@ public class AppDbContext : DbContext
     public DbSet<Reviews> Reviews { get; set; }
     public DbSet<Lecture> Lectures { get; set; }
     public DbSet<Quiz>  Quizzes { get; set; }
+    public DbSet<UserLecture> UserLectures { get; set; }
+    public DbSet<QuizAttempt> QuizAttempts { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -97,5 +99,23 @@ public class AppDbContext : DbContext
             .HasForeignKey(a => a.UserId)
             .IsRequired()
             .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<UserLecture>()
+            .HasIndex(ul => new { ul.UserId, ul.LectureId })
+            .IsUnique();
+
+        modelBuilder.Entity<UserLecture>()
+            .HasOne(ul => ul.User)
+            .WithMany()
+            .HasForeignKey(ul => ul.UserId)
+            .OnDelete(DeleteBehavior.Cascade);
+
+        modelBuilder.Entity<UserLecture>()
+            .HasOne(ul => ul.Lecture)
+            .WithMany()
+            .HasForeignKey(ul => ul.LectureId)
+            .OnDelete(DeleteBehavior.Cascade);
+        
+        modelBuilder.Entity<QuizAttempt>().ToTable("QuizAttempt");
     }
 }
