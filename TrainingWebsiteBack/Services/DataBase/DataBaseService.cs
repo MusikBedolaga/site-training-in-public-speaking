@@ -123,6 +123,29 @@ namespace TrainingWebsiteBack.Services.DataBase
 
             return allCourses;
         }
+        
+        public async Task<List<Course>> GetAllCoursesForAdminAsync()
+        {
+            return await _context.Courses
+                .AsNoTracking()
+                .Include(c => c.Creator)
+                .Include(c => c.Lectures)
+                .ToListAsync();
+        }
+
+        public async Task DeleteCourseByIdAsync(int courseId)
+        {
+            var course = await _context.Courses
+                .Include(c => c.Lectures)
+                .FirstOrDefaultAsync(c => c.Id == courseId);
+
+            if (course != null)
+            {
+                _context.Courses.Remove(course);
+                await _context.SaveChangesAsync();
+            }
+        }
+
 
         public async Task<List<Course>> GetAllCoursesAsync()
         {
