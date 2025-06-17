@@ -1,9 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using TrainingWebsiteBack.Models;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
+using TrainingWebsiteBack.Models;
+using TrainingWebsiteBack.Models.TrainingWebsiteBack.Models;
 
 namespace TrainingWebsiteBack.Services.DataBase
 {
@@ -426,6 +427,28 @@ namespace TrainingWebsiteBack.Services.DataBase
                 });
                 await _context.SaveChangesAsync();
             }
+        }
+
+        // MARK: Certificate
+        public async Task<Certificate?> GetCertificateByCourseIdAsync(int courseId)
+        {
+            return await _context.Certificates
+                .AsNoTracking()
+                .FirstOrDefaultAsync(c => c.CourseId == courseId);
+        }
+        public async Task<Certificate> AddCertificateAsync(Certificate certificate)
+        {
+                await _context.Certificates.AddAsync(certificate);
+                await _context.SaveChangesAsync();
+                return certificate;
+            
+        }
+
+        public async Task UpdateCertificateAsync(Certificate certificate)
+        {
+                _context.Entry(certificate).State = EntityState.Modified;
+                await _context.SaveChangesAsync();
+            
         }
     }
 }
