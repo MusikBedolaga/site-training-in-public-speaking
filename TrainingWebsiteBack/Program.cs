@@ -1,9 +1,13 @@
+<<<<<<< Updated upstream
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using TrainingWebsiteBack.Services.DataBase;
 using TrainingWebsiteBack.Services.Network;
 
 namespace TrainingWebsiteBack;
+=======
+﻿using TrainingWebsiteBack.Services.Network;
+>>>>>>> Stashed changes
 
 public class Program
 {
@@ -11,6 +15,7 @@ public class Program
     {
         Console.WriteLine("Проверка подключения...");
 
+<<<<<<< Updated upstream
         var config = new ConfigurationBuilder()
             .SetBasePath(Directory.GetCurrentDirectory())
             .AddJsonFile("appsettings.json")
@@ -26,5 +31,13 @@ public class Program
         
         var network = NetworkService.Instance;
         await network.StartAsync();
+=======
+        var network = NetworkService.Instance;
+
+        await network.StartAsync();
+
+        Console.WriteLine("Сервер запущен. Нажмите Enter для остановки.");
+        Console.ReadLine();
+>>>>>>> Stashed changes
     }
 }
