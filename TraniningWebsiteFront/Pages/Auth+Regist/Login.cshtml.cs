@@ -67,6 +67,4 @@ public class LoginModel : PageModel
             _ => RedirectToPage("/Index")
         };
     }
-
 }
-

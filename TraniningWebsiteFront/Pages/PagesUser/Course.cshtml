@@ -36,18 +36,22 @@
     </div>
 
     <!-- Секция: Тесты -->
+    <!-- Секция: Тесты -->
     <div class="section">
         <div class="section-title">Тесты</div>
         <input type="text" class="search-box" placeholder="Поиск тестов..." />
+
         <div class="cards-grid">
-            @if (Model.Quizzes != null && Model.Quizzes.Any())
+            @if (!Model.IsSubscribed)
+            {
+                <p>Подпишитесь на курс, чтобы получить доступ к тестам.</p>
+            }
+            else if (Model.Quizzes != null && Model.Quizzes.Any())
             {
                 @foreach (var quiz in Model.Quizzes)
                 {
                     <a asp-page="/PagesUser/Quiz" asp-route-id="@quiz.Id" class="card-link">
-                        <div class="card">
-                            @quiz.Title
-                        </div>
+                        <div class="card">@quiz.Title</div>
                     </a>
                 }
             }
@@ -57,22 +61,23 @@
             }
         </div>
     </div>
-
+    
     <!-- Секция: Лекции -->
     <div class="section">
         <div class="section-title">Лекции</div>
         <input type="text" class="search-box" placeholder="Поиск лекций..." />
+
         <div class="cards-grid">
-            @if (Model.Lectures != null && Model.Lectures.Any())
+            @if (!Model.IsSubscribed)
+            {
+                <p>Подпишитесь на курс, чтобы получить доступ к лекциям.</p>
+            }
+            else if (Model.Lectures != null && Model.Lectures.Any())
             {
                 @foreach (var lecture in Model.Lectures)
                 {
-                    <a asp-page="/PagesUser/Lecture"
-                       asp-route-id="@lecture.Id"
-                       class="card-link">
-                        <div class="card">
-                            @lecture.Title
-                        </div>
+                    <a asp-page="/PagesUser/Lecture" asp-route-id="@lecture.Id" class="card-link">
+                        <div class="card">@lecture.Title</div>
                     </a>
                 }
             }
