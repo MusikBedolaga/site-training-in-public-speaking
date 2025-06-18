@@ -1,5 +1,5 @@
 
-﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using TrainingWebsiteBack.Services.DataBase;
 using TrainingWebsiteBack.Services.Network;
@@ -12,6 +12,5 @@ public class Program
     {
 
         Console.WriteLine("Проверка подключения...");
-
     }
 }

@@ -8,20 +8,29 @@ namespace TraniningWebsiteFront.Pages.PagesAdmin;
 public class HomeModel : PageModel
 {
     private readonly DataBaseService _dataBaseService;
+    private readonly ElasticSearchService _elasticSearchService;
 
-    public HomeModel(DataBaseService dataBaseService)
+    public HomeModel(DataBaseService dataBaseService, ElasticSearchService elasticSearchService)
     {
         _dataBaseService = dataBaseService;
+        _elasticSearchService = elasticSearchService;
     }
-    
+
     public List<Course> Courses { get; set; }
     
-    public async Task<IActionResult> OnGetAsync ()
+    [BindProperty(SupportsGet = true)]
+    public string SearchQuery { get; set; }
+
+    public async Task<IActionResult> OnGetAsync()
     {
-        Courses = new List<Course>();
-        
-        Courses = await _dataBaseService.GetAllCoursesForAdminAsync();
-        
+        if (!string.IsNullOrWhiteSpace(SearchQuery))
+        {
+            Courses = await _elasticSearchService.SearchCoursesAsync(SearchQuery);
+        }
+        else
+        {
+            Courses = await _dataBaseService.GetAllCoursesForAdminAsync();
+        }
         return Page();
     }
     

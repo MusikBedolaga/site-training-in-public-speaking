@@ -100,9 +100,10 @@
 <body>
 
 <main>
-    <div class="search-box">
-        <input type="text" placeholder="Поиск..." />
-    </div>
+    <form method="get" class="search-box">
+        <input type="text" name="SearchQuery" value="@Model.SearchQuery" placeholder="Поиск..." />
+        <button type="submit">Искать</button>
+    </form>
 
     <h2 style="text-align: center;">Список лекций и заданий</h2>
 
