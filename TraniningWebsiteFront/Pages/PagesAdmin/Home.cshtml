@@ -1,0 +1,140 @@
+@page
+@model TraniningWebsiteFront.Pages.PagesAdmin.HomeModel
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Главная страничка ";
+}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>@ViewData["Title"] - Админ</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            font-family: sans-serif;
+            background-color: #ffeada;
+        }
+
+        header {
+            background-color: #f0caba;
+            display: flex;
+            padding: 1rem;
+            justify-content: space-around;
+        }
+
+        header a {
+            padding: 0.8rem 1.5rem;
+            background-color: #dba89b;
+            color: black;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 1rem;
+        }
+
+        main {
+            flex: 1;
+            padding: 2rem;
+        }
+
+        footer {
+            background-color: #a38376;
+            padding: 1rem;
+            text-align: center;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .search-box {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 2rem;
+        }
+
+        .search-box input {
+            padding: 10px 20px;
+            border-radius: 10px;
+            border: 1px solid #ccc;
+            width: 250px;
+        }
+
+        .course-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            justify-content: center;
+        }
+
+        .course-card {
+            background-color: #fafafa;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 1rem 1.5rem;
+            width: 250px;
+            transition: box-shadow 0.2s ease-in-out;
+        }
+
+        .course-card:hover {
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+        }
+
+        .course-title {
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .course-author {
+            color: #666;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<body>
+
+<main>
+    <div class="search-box">
+        <input type="text" placeholder="Поиск..." />
+    </div>
+
+    <h2 style="text-align: center;">Список лекций и заданий</h2>
+
+    <div class="course-list">
+        @foreach (var course in Model.Courses)
+        {
+            <div class="course-card">
+                <div class="course-title">@course.Name</div>
+                <div class="course-author">Создал: @(course.Creator?.Name ?? "Неизвестно")</div>
+
+                <ul>
+                    @foreach (var lecture in course.Lectures)
+                    {
+                        <li>@lecture.Title</li>
+                    }
+                </ul>
+
+                <form method="post" asp-page-handler="Delete" asp-route-id="@course.Id" style="margin-top: 1rem;">
+                    <button type="submit" style="
+                background-color: #d9534f;
+                color: white;
+                border: none;
+                padding: 0.5rem 1rem;
+                border-radius: 5px;
+                cursor: pointer;
+            ">
+                        Удалить курс
+                    </button>
+                </form>
+            </div>
+        }
+    </div>
+</main>
+</body>
+</html>

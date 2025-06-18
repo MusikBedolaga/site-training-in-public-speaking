@@ -13,8 +13,12 @@ public class QuizAttempt
     [ForeignKey("Quiz")]
     public int QuizId { get; set; }
 
-    [Required]
     public Quiz Quiz { get; set; }
+    
+    [Required]
+    public int UserId { get; set; }
+
+    public User User { get; set; }
 
     [Required]
     [MaxLength(256)]

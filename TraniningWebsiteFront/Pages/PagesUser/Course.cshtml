@@ -1,0 +1,205 @@
+@page "{id:int}"
+@model TraniningWebsiteFront.Pages.PagesUser.CourseModel
+@{
+    Layout = "_LayoutUser";
+    ViewData["Title"] = "Экран курса";
+}
+
+<div class="container">
+    <!-- Название курса -->
+    <div class="course-title">@Model.SelectedCourse?.Name</div>
+
+    <!-- Описание и правая панель -->
+    <div class="course-overview">
+        <!-- Описание курса -->
+        <div class="description-box">
+            <h3>Описание курса</h3>
+            <p>@Model.SelectedCourse?.Description</p>
+        </div>
+
+        <!-- Прогресс и кнопка подписки -->
+        <div class="right-panel">
+            <div class="progress-bar">
+                <div class="progress-bar-inner" style="width:@Model.Progress%">@Model.Progress% выполнено</div>
+            </div>
+            <form method="post">
+                @if (Model.IsSubscribed)
+                {
+                    <button class="subscribe-btn" disabled>Вы подписаны</button>
+                }
+                else
+                {
+                    <button class="subscribe-btn">Подписаться</button>
+                }
+            </form>
+        </div>
+    </div>
+
+    <!-- Секция: Тесты -->
+    <!-- Секция: Тесты -->
+    <div class="section">
+        <div class="section-title">Тесты</div>
+        <input type="text" class="search-box" placeholder="Поиск тестов..." />
+
+        <div class="cards-grid">
+            @if (!Model.IsSubscribed)
+            {
+                <p>Подпишитесь на курс, чтобы получить доступ к тестам.</p>
+            }
+            else if (Model.Quizzes != null && Model.Quizzes.Any())
+            {
+                @foreach (var quiz in Model.Quizzes)
+                {
+                    <a asp-page="/PagesUser/Quiz" asp-route-id="@quiz.Id" class="card-link">
+                        <div class="card">@quiz.Title</div>
+                    </a>
+                }
+            }
+            else
+            {
+                <p>Тесты не найдены.</p>
+            }
+        </div>
+    </div>
+    
+    <!-- Секция: Лекции -->
+    <div class="section">
+        <div class="section-title">Лекции</div>
+        <input type="text" class="search-box" placeholder="Поиск лекций..." />
+
+        <div class="cards-grid">
+            @if (!Model.IsSubscribed)
+            {
+                <p>Подпишитесь на курс, чтобы получить доступ к лекциям.</p>
+            }
+            else if (Model.Lectures != null && Model.Lectures.Any())
+            {
+                @foreach (var lecture in Model.Lectures)
+                {
+                    <a asp-page="/PagesUser/Lecture" asp-route-id="@lecture.Id" class="card-link">
+                        <div class="card">@lecture.Title</div>
+                    </a>
+                }
+            }
+            else
+            {
+                <p>Лекции не найдены.</p>
+            }
+        </div>
+    </div>
+</div>
+
+
+<style>
+    .container {
+        padding: 2rem;
+        background-color: #ffeada;
+        font-family: sans-serif;
+    }
+    
+    .course-title {
+        text-align: center;
+        font-size: 2rem;
+        font-weight: bold;
+        margin-bottom: 2rem;
+    }
+
+    .course-overview {
+        display: flex;
+        justify-content: space-between;
+        gap: 2rem;
+        margin-bottom: 3rem;
+    }
+
+    .description-box {
+        flex: 1;
+        background-color: #eac5b4;
+        padding: 1rem;
+        border-radius: 8px;
+    }
+
+    .description-box h3 {
+        margin-top: 0;
+        margin-bottom: 0.5rem;
+    }
+
+    .right-panel {
+        width: 300px;
+        display: flex;
+        flex-direction: column;
+        gap: 1.5rem;
+    }
+
+    .progress-bar {
+        background-color: #eee;
+        border-radius: 10px;
+        overflow: hidden;
+        height: 1.5rem;
+    }
+
+    .progress-bar-inner {
+        background-color: #dba89b;
+        height: 100%;
+        text-align: center;
+        color: white;
+        font-weight: bold;
+        line-height: 1.5rem;
+    }
+
+    .subscribe-btn {
+        padding: 0.8rem 2rem;
+        background-color: #d18c7f;
+        color: white;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        align-self: flex-start;
+    }
+
+    /* Секции тестов и лекций */
+    .section {
+        margin-bottom: 3rem;
+    }
+
+    .section-title {
+        font-size: 1.5rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+    }
+
+    .search-box {
+        width: 100%;
+        padding: 0.5rem;
+        margin-bottom: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+    }
+
+    .cards-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 1rem;
+        background-color: #f4c6ae;
+        padding: 1rem;
+        border-radius: 8px;
+    }
+
+    .card {
+        background-color: #eac5b4;
+        padding: 1rem;
+        text-align: center;
+        border-radius: 8px;
+        cursor: pointer;
+        transition: box-shadow 0.2s ease-in-out;
+    }
+
+    .card:hover {
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+    }
+
+    .card-link {
+        text-decoration: none;
+        color: inherit;
+    }
+</style>

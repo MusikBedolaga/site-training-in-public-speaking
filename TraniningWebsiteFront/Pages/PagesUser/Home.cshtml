@@ -1,0 +1,53 @@
+@page
+@model TraniningWebsiteFront.Pages.PagesUser.HomeModel
+@{
+    Layout = "_LayoutUser";
+    ViewData["Title"] = "Главная";
+}
+
+<h2>Доступные курсы</h2>
+
+<div class="cards">
+    @if (Model.Courses.Any())
+    {
+        foreach (var course in Model.Courses)
+        {
+            <a asp-page="/PagesUser/Course" asp-route-id="@course.Id" class="card-link">
+                <div class="card">
+                    <div><strong>@course.Name</strong></div>
+                    <div>@course.Description</div>
+                </div>
+            </a>
+        }
+    }
+    else
+    {
+        <p>Нет доступных курсов.</p>
+    }
+</div>
+
+<style>
+    .cards {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+        gap: 1rem;
+    }
+
+    .card-link {
+        text-decoration: none;
+        color: inherit;
+    }
+
+    .card {
+        padding: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 8px;
+        background-color: #f9f9f9;
+        transition: box-shadow 0.3s ease;
+    }
+
+    .card:hover {
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        cursor: pointer;
+    }
+</style>

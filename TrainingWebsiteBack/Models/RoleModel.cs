@@ -20,4 +20,4 @@ public class Role
     public RoleEnum Name { get; set; }
     
     public ICollection<User> Users { get; set; } = new List<User>();
-}
+}   

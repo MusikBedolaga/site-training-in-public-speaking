@@ -77,11 +77,13 @@
             margin-top: 20px;
             background-color: #e7b9aa;
             color: #3a2e2a;
+            text-decoration: none;
         }
 
         .secondary-button:hover {
             background-color: #d6a59a;
         }
+    }
     </style>
 </head>
 <body>
@@ -90,11 +92,14 @@
         <form method="post">
             <input asp-for="Email" type="text" placeholder="Введите email" />
             <input asp-for="Password" type="password" placeholder="Введите пароль" />
-            <button type="submit">Войти</button>
-        </form>
-        <form method="get" asp-page="/Register">
-            <button type="submit" class="secondary-button">Создать аккаунт</button>
-        </form>
+            <button type="submit">Войти</button>    
+        </form>  
+
+        <form method="get" asp-page="/Auth+Regist/Registration">
+    <button type="submit" class="secondary-button">Создать аккаунт</button>
+</form>
+ 
+    
     </div>
 </body>
 </html>

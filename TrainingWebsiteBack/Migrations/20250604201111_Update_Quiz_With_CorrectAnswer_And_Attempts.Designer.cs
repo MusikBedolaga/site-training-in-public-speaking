@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TrainingWebsiteBack.Services.DataBase;
@@ -11,9 +12,11 @@ using TrainingWebsiteBack.Services.DataBase;
 namespace TrainingWebsiteBack.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250604201111_Update_Quiz_With_CorrectAnswer_And_Attempts")]
+    partial class Update_Quiz_With_CorrectAnswer_And_Attempts
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -34,7 +37,7 @@ namespace TrainingWebsiteBack.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("CourseSubscriptions", (string)null);
+                    b.ToTable("CourseSubscriptions");
                 });
 
             modelBuilder.Entity("TrainingWebsiteBack.Models.Achievement", b =>
@@ -61,7 +64,7 @@ namespace TrainingWebsiteBack.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Achievement", (string)null);
+                    b.ToTable("Achievement");
                 });
 
             modelBuilder.Entity("TrainingWebsiteBack.Models.Course", b =>
@@ -90,7 +93,7 @@ namespace TrainingWebsiteBack.Migrations
 
                     b.HasIndex("CreatorId");
 
-                    b.ToTable("Courses", (string)null);
+                    b.ToTable("Courses");
                 });
 
             modelBuilder.Entity("TrainingWebsiteBack.Models.Lecture", b =>
@@ -121,7 +124,7 @@ namespace TrainingWebsiteBack.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Lectures", (string)null);
+                    b.ToTable("Lectures");
                 });
 
             modelBuilder.Entity("TrainingWebsiteBack.Models.Quiz", b =>
@@ -157,7 +160,7 @@ namespace TrainingWebsiteBack.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Quizzes", (string)null);
+                    b.ToTable("Quizzes");
                 });
 
             modelBuilder.Entity("TrainingWebsiteBack.Models.QuizAttempt", b =>
@@ -181,16 +184,11 @@ namespace TrainingWebsiteBack.Migrations
                     b.Property<int>("QuizId")
                         .HasColumnType("integer");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.HasIndex("QuizId");
 
-                    b.HasIndex("UserId");
-
-                    b.ToTable("QuizAttempt", (string)null);
+                    b.ToTable("QuizAttempt");
                 });
 
             modelBuilder.Entity("TrainingWebsiteBack.Models.Reviews", b =>
@@ -229,7 +227,7 @@ namespace TrainingWebsiteBack.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
                 });
 
             modelBuilder.Entity("TrainingWebsiteBack.Models.User", b =>
@@ -262,7 +260,7 @@ namespace TrainingWebsiteBack.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("TrainingWebsiteBack.Models.UserAchievement", b =>
@@ -288,7 +286,7 @@ namespace TrainingWebsiteBack.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserAchievement", (string)null);
+                    b.ToTable("UserAchievement");
                 });
 
             modelBuilder.Entity("CourseSubscriptions", b =>
@@ -347,15 +345,7 @@ namespace TrainingWebsiteBack.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TrainingWebsiteBack.Models.User", "User")
-                        .WithMany()
-                        .HasForeignKey("UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
                     b.Navigation("Quiz");
-
-                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("TrainingWebsiteBack.Models.User", b =>

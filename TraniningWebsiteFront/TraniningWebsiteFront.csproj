@@ -18,4 +18,13 @@
       <Compile Remove="Pages\User.cshtml.cs" />
     </ItemGroup>
 
+    <ItemGroup>
+      <AdditionalFiles Include="Pages\Auth+Regist\Login.cshtml" />
+      <AdditionalFiles Include="Pages\Auth+Regist\Registration.cshtml" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <_ContentIncludedByDefault Remove="Pages\UserPage\Home.cshtml" />
+    </ItemGroup>
+
 </Project>

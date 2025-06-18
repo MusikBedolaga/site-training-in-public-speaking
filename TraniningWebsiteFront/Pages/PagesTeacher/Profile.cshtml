@@ -1,0 +1,184 @@
+@page
+@model TraniningWebsiteFront.Pages.ProfileModel
+@{
+    Layout = "_LayoutTeacher";
+    ViewData["Title"] = "Профиль";
+    var avatarSrc = string.IsNullOrEmpty(Model.PhotoPath) ? "/img/default-avatar.png" : Model.PhotoPath;
+}
+
+<style>
+    .profile-container {
+        display: flex;
+        flex-direction: column;
+        max-width: 600px;
+        margin: 0 auto;
+        background-color: #fbe2d0;
+        padding: 2rem;
+        border-radius: 0.5rem;
+    }
+
+    .profile-title {
+        text-align: center;
+        margin-bottom: 1.5rem;
+        color: #5a3e36;
+    }
+
+    .profile-section {
+        margin-bottom: 2rem;
+    }
+
+    .section-title {
+        font-weight: bold;
+        margin-bottom: 1rem;
+        color: #5a3e36;
+    }
+
+    .form-group {
+        margin-bottom: 1rem;
+    }
+
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        color: #5a3e36;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 0.5rem;
+        border: 1px solid #dba89b;
+        border-radius: 0.3rem;
+        background-color: #fff8f2;
+    }
+
+    form {
+        margin-bottom: 2rem;
+    }
+
+    .save-btn {
+        padding: 0.8rem 1.5rem;
+        background-color: #dba89b;
+        color: black;
+        font-weight: bold;
+        border: none;
+        border-radius: 1rem;
+        cursor: pointer;
+        display: block;
+        margin: 1rem auto 0 auto;
+    }
+
+    .save-btn:hover {
+        background-color: #c99789;
+    }
+
+    .user-data {
+        background-color: #e3bfb3;
+        padding: 1rem;
+        border-radius: 0.5rem;
+        margin-bottom: 1rem;
+    }
+
+    .user-data p {
+        margin: 0.5rem 0;
+    }
+
+    .avatar-container {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        margin-bottom: 1.5rem;
+    }
+
+    .avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #dba89b;
+        margin-bottom: 1rem;
+    }
+
+    .avatar-upload {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .avatar-upload-label {
+        padding: 0.5rem 1rem;
+        background-color: #dba89b;
+        color: black;
+        font-weight: bold;
+        border-radius: 0.5rem;
+        cursor: pointer;
+        margin-top: 0.5rem;
+    }
+
+    .avatar-upload-label:hover {
+        background-color: #c99789;
+    }
+
+    #avatar-input {
+        display: none;
+    }
+</style>
+
+
+<div class="profile-container">
+    <h1 class="profile-title">Мои данные</h1>
+
+    <!-- Форма загрузки аватара -->
+    <form method="post" enctype="multipart/form-data" asp-page-handler="ChangePhoto">
+        <div class="avatar-container">
+            <img src="@avatarSrc" alt="Аватар" class="avatar" id="user-avatar" />
+            <div class="avatar-upload">
+                <label for="avatar-input" class="avatar-upload-label">Выбрать фото</label>
+                <input type="file" id="avatar-input" name="Photo" accept="image/*" />
+                <button type="submit" class="save-btn">Обновить фото</button>
+            </div>
+        </div>
+    </form>
+
+    <!-- Отображение текущих данных -->
+    <div class="profile-section">
+        <h2 class="section-title">Данные пользователя</h2>
+        <div class="user-data">
+            <p><strong>Email:</strong> @Model.Email</p>
+            <p><strong>ФИО:</strong> @Model.FullName</p>
+        </div>
+    </div>
+
+    <!-- Форма редактирования данных -->
+    <div class="profile-section">
+        <h2 class="section-title">Изменить данные</h2>
+        <form method="post" asp-page-handler="UpdateData">
+            <div class="form-group">
+                <label asp-for="Email"></label>
+                <input asp-for="Email" class="form-control" />
+                <span asp-validation-for="Email" class="text-danger"></span>
+            </div>
+
+            <div class="form-group">
+                <label asp-for="FullName"></label>
+                <input asp-for="FullName" class="form-control" />
+                <span asp-validation-for="FullName" class="text-danger"></span>
+            </div>
+
+            <button type="submit" class="save-btn">Сохранить данные</button>
+        </form>
+    </div>
+</div>
+
+
+<script>
+    document.getElementById('avatar-input').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                document.getElementById('user-avatar').src = event.target.result;
+            };
+            reader.readAsDataURL(file);
+        }
+    });
+</script>

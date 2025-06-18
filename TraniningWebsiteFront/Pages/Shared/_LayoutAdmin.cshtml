@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8" />
+    <title>@ViewData["Title"] - Ученик</title>
+    <style>
+        html, body {
+            height: 100%;
+            margin: 0;
+        }
+
+        body {
+            display: flex;
+            flex-direction: column;
+            font-family: sans-serif;
+            background-color: #ffeada;
+        }
+
+        header {
+            background-color: #f0caba;
+            display: flex;
+            padding: 1rem;
+            justify-content: space-around;
+        }
+
+        header a {
+            padding: 0.8rem 1.5rem;
+            background-color: #dba89b;
+            color: black;
+            font-weight: bold;
+            text-decoration: none;
+            border-radius: 1rem;
+        }
+
+        main {
+            flex: 1;
+            padding: 2rem;
+        }
+
+        footer {
+            background-color: #a38376;
+            padding: 1rem;
+            text-align: center;
+            font-weight: bold;
+            color: #fff;
+        }
+
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+
+        .card {
+            border: 1px solid #ddd;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border-radius: 8px;
+            background-color: #fafafa;
+            transition: box-shadow 0.2s ease-in-out;
+        }
+
+        .card:hover {
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.15);
+            cursor: pointer;
+        }
+
+        h2 {
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <a asp-page="/PagesAdmin/Home">Главная</a>
+        <a asp-page="/PagesAdmin/Profile">Профиль</a>
+    </header>
+
+    <main>
+        @RenderBody()
+    </main>
+
+    <footer>
+        Footer
+    </footer>
+</body>
+</html>

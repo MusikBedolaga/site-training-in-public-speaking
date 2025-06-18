@@ -1,0 +1,181 @@
+@page "{id:int}"
+@model TraniningWebsiteFront.Pages.PagesUser.QuizModel
+@{
+    Layout = "_LayoutUser";
+    ViewData["Title"] = "Экран Теста";
+}
+
+@if (TempData["SubscriptionAlert"] != null)
+{
+    <script>
+        alert('@TempData["SubscriptionAlert"]');
+    </script>
+}
+
+<form method="post" class="container-quiz">
+    <!-- Заголовок вопроса -->
+    <div class="quiz-title">
+        @Model.SelectedQuiz?.Title
+    </div>
+
+    <!-- Вопрос -->
+    <div class="quiz-question">
+        @Model.SelectedQuiz?.Content
+    </div>
+
+    <!-- Поле ввода ответа -->
+    <div class="quiz-answer">
+        <label for="Answer" class="answer-label">Ваш ответ:</label>
+        <textarea id="Answer" name="Answer" class="answer-input" rows="4"></textarea>
+    </div>
+    
+
+    @if (Model.IsCorrectAnswer.HasValue)
+    {
+        <div class="quiz-result @(Model.IsCorrectAnswer.Value ? "correct" : "incorrect")">
+            @(Model.IsCorrectAnswer.Value ? "Верно!" : "Неверно. Попробуйте снова.")
+        </div>
+    }
+
+    <!-- Кнопки -->
+    <div class="quiz-buttons">
+        <a asp-page="/PagesUser/Course"
+           asp-route-id="@Model.SelectedQuiz.CourseId"
+           class="btn-page">
+            Уйти
+        </a>
+
+        <button type="submit" class="btn-page">
+            Сохранить
+        </button>
+
+        @if (Model.NextQuizId.HasValue)
+        {
+            <a asp-page="/PagesUser/Lecture"
+               asp-route-id="@Model.NextQuizId.Value"
+               class="btn-page">
+                Дальше
+            </a>
+        }
+        else
+        {
+            <button class="btn-page" disabled>Дальше</button>
+        }
+    </div>
+</form>
+
+
+<style>
+    .container-quiz {
+        padding: 2rem;
+        background-color: #ffeada;
+        font-family: sans-serif;
+        min-height: 80vh;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+    }
+
+    .quiz-title {
+        text-align: center;
+        font-size: 1.8rem;
+        font-weight: bold;
+        margin-bottom: 1.5rem;
+    }
+
+    .quiz-question {
+        background-color: #eac5b4;
+        padding: 1.5rem;
+        border-radius: 8px;
+        flex: 1;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1rem;
+        color: #333;
+        margin-bottom: 2rem;
+        text-align: center;
+    }
+
+    .quiz-buttons {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+
+    /* 🔁 Единый стиль кнопок */
+    .btn-page {
+        padding: 0.8rem 2rem;
+        background-color: #d18c7f;
+        color: white;
+        font-weight: bold;
+        border: none;
+        border-radius: 8px;
+        cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+    }
+
+    .btn-page:disabled {
+        background-color: #ccc;
+        cursor: not-allowed;
+    }
+
+    .quiz-answer {
+        margin-top: 1rem;
+        margin-bottom: 2rem;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .answer-label {
+        font-weight: bold;
+        margin-bottom: 0.5rem;
+        color: #333;
+    }
+
+    .answer-input {
+        padding: 1rem;
+        border-radius: 8px;
+        border: 1px solid #ccc;
+        font-size: 1rem;
+        resize: vertical;
+        background-color: #fff7f2;
+        color: #333;
+    }
+
+    .quiz-result {
+        text-align: center;
+        font-size: 1.2rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .result-correct {
+        color: green;
+        font-weight: bold;
+    }
+
+    .result-incorrect {
+        color: red;
+        font-weight: bold;
+    }
+
+    .quiz-result {
+        margin-top: 1rem;
+        font-weight: bold;
+        padding: 1rem;
+        border-radius: 8px;
+        text-align: center;
+    }
+
+    .correct {
+        background-color: #d4edda;
+        color: #155724;
+    }
+
+    .incorrect {
+        background-color: #f8d7da;
+        color: #721c24;
+    }
+
+</style>

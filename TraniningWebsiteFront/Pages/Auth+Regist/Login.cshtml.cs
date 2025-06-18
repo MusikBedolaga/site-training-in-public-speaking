@@ -1,4 +1,7 @@
 using System.ComponentModel.DataAnnotations;
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authentication;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using TrainingWebsiteBack.Models;
@@ -33,7 +36,7 @@ public class LoginModel : PageModel
         {
             return Page();
         }
-        
+
         var user = await _dataBaseService.GetUserByCredentialsAsync(Email, Password);
 
         if (user == null)
@@ -44,7 +47,19 @@ public class LoginModel : PageModel
 
         var role = await _dataBaseService.GetRoleAsync(user);
 
-        // надо будет поменять страницы
+
+        var claims = new List<Claim>
+        {
+            new Claim(ClaimTypes.Name, user.Email),
+            new Claim(ClaimTypes.Role, role.Name.ToString()),
+            new Claim("UserId", user.Id.ToString())
+        };
+        
+        var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
+        var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
+
+        await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
+        
         return role.Name switch
         {
             RoleEnum.User => RedirectToPage("/PagesUser/Home"),
@@ -54,4 +69,3 @@ public class LoginModel : PageModel
         };
     }
 }
-
