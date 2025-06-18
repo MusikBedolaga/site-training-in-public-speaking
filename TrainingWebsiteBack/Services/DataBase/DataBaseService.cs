@@ -4,16 +4,17 @@ using TrainingWebsiteBack.Models;
 using System.IO;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using Elasticsearch.Net;
 
 namespace TrainingWebsiteBack.Services.DataBase
 {
     public class DataBaseService
     {
         private readonly AppDbContext _context;
+        private readonly ElasticSearchService _elasticSearchService;
         
-        public DataBaseService(AppDbContext context)
-        {
-            _context = context;
+        public DataBaseService(AppDbContext context, ElasticSearchService elasticSearchService) {
+            _context = context; _elasticSearchService = elasticSearchService;
         }
         
         //MARK: User
@@ -135,14 +136,14 @@ namespace TrainingWebsiteBack.Services.DataBase
 
         public async Task DeleteCourseByIdAsync(int courseId)
         {
-            var course = await _context.Courses
-                .Include(c => c.Lectures)
-                .FirstOrDefaultAsync(c => c.Id == courseId);
-
+            var course = await _context.Courses.FindAsync(courseId);
             if (course != null)
             {
                 _context.Courses.Remove(course);
                 await _context.SaveChangesAsync();
+
+                // Удалить из индекса Elasticsearch
+                await _elasticSearchService.DeleteCourseFromIndexAsync(courseId);
             }
         }
 
@@ -167,37 +168,21 @@ namespace TrainingWebsiteBack.Services.DataBase
 
         public async Task UpdateCourseAsync(Course course)
         {
-            try
-            {
-                // Найти существующий курс по ID
-                var existingCourse = await _context.Courses.FindAsync(course.Id);
+            var existingCourse = await _context.Courses.FindAsync(course.Id);
+            if (existingCourse == null) throw new ArgumentException("Курс не найден");
 
-                if (existingCourse == null)
-                {
-                    // Если курс не найден, логируем и выбрасываем исключение
-                    Console.WriteLine($"Курс с ID {course.Id} не найден.");
-                    throw new ArgumentException("Курс не найден");
-                }
+            existingCourse.Name = course.Name;
+            existingCourse.Description = course.Description;
+            // обнови другие поля если нужно
 
-                // Обновляем данные курса
-                Console.WriteLine($"Обновляем курс: старое название - {existingCourse.Name}, новое название - {course.Name}");
-                existingCourse.Name = course.Name;
-                existingCourse.Description = course.Description;
+            _context.Entry(existingCourse).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
 
-                // Уведомляем контекст о том, что объект был изменен
-                _context.Entry(existingCourse).State = EntityState.Modified;
-
-                // Сохраняем изменения в базе данных
-                await _context.SaveChangesAsync();
-                Console.WriteLine("Изменения сохранены.");
-            }
-            catch (Exception ex)
-            {
-                // Логируем исключение
-                Console.WriteLine($"Ошибка при обновлении курса: {ex.Message}");
-                throw;
-            }
+            // Обновить индекс в Elasticsearch
+            await _elasticSearchService.IndexCourseAsync(existingCourse);
         }
+        
+        
 
         public async Task<Course> AddCourseAsync(Course course)
         {
@@ -205,6 +190,8 @@ namespace TrainingWebsiteBack.Services.DataBase
 
             await _context.Courses.AddAsync(course);
             await _context.SaveChangesAsync();
+            
+            await _elasticSearchService.IndexCourseAsync(course);
             return course;
         }
 
