@@ -1,0 +1,44 @@
+﻿@page
+@model TraniningWebsiteFront.Pages.PagesUser.DownloadCertificateModel
+@{
+    Layout = "_LayoutUser";
+}
+
+<div class="container">
+    <h2>Сертификат готов к скачиванию</h2>
+    <p>Если скачивание не началось автоматически, нажмите кнопку ниже:</p>
+
+    <a href="@Url.Page("DownloadCertificate", new { CourseId = Model.CourseId })"
+       class="download-btn">
+        Скачать сертификат
+    </a>
+
+    <script>
+        // Автоматическое скачивание при загрузке страницы
+        window.onload = function() {
+            window.location.href = "@Url.Page("DownloadCertificate", new { CourseId = Model.CourseId })";
+        };
+    </script>
+</div>
+<style>
+    .container {
+        padding: 2rem;
+        text-align: center;
+    }
+
+    .download-btn {
+        display: inline-block;
+        padding: 1rem 2rem;
+        background-color: #4CAF50;
+        color: white;
+        text-decoration: none;
+        border-radius: 8px;
+        margin-top: 2rem;
+    }
+
+    .back-link {
+        display: inline-block;
+        margin-top: 1rem;
+        color: #d18c7f;
+    }
+</style>

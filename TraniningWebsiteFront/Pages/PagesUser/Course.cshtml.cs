@@ -14,7 +14,7 @@ public class CourseModel : PageModel
         _dataBaseService = dataBaseService;
     }
 
-    public Course? SelectedCourse { get; set; }
+    public Course SelectedCourse { get; set; }
 
     public List<Lecture> Lectures { get; set; } = new();
     public List<Quiz> Quizzes { get; set; } = new();
@@ -22,6 +22,7 @@ public class CourseModel : PageModel
     public int Progress { get; set; } = 0;
 
     public bool IsSubscribed { get; set; }
+    public bool CanDownloadCertificate { get; set; }
 
     public async Task<IActionResult> OnGetAsync(int id)
     {
@@ -50,6 +51,10 @@ public class CourseModel : PageModel
             int completed = completedLectures + passedQuizzes;
 
             Progress = total > 0 ? (int)Math.Round((double)completed / total * 100) : 0;
+
+            // Перенесено после расчета прогресса
+            CanDownloadCertificate = Progress >= 80 &&
+                              await _dataBaseService.GetCertificateByCourseIdAsync(id) != null;
         }
 
         return Page();

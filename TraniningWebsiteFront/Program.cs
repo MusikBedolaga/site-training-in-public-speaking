@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using TrainingWebsiteBack.Services.DataBase;
+using TrainingWebsiteBack.Services.PDF;
 using TraniningWebsiteFront;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -13,6 +14,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
 builder.Services.AddScoped<DataBaseService>();
+builder.Services.AddScoped<PdfCertificateGenerator>();
 
 // RazorPages + маршруты
 builder.Services.AddRazorPages(options =>

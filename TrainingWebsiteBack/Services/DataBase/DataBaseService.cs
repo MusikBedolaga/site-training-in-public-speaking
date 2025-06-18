@@ -1,9 +1,10 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using TrainingWebsiteBack.Models;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
+using TrainingWebsiteBack.Models;
+using TrainingWebsiteBack.Models.TrainingWebsiteBack.Models;
 
 namespace TrainingWebsiteBack.Services.DataBase
 {
@@ -448,6 +449,78 @@ namespace TrainingWebsiteBack.Services.DataBase
                     LectureId = lectureId
                 });
                 await _context.SaveChangesAsync();
+            }
+        }
+
+        // MARK: Certificate
+        public async Task<Certificate?> GetCertificateByCourseIdAsync(int courseId)
+        {
+            return await _context.Certificates
+                .FirstOrDefaultAsync(c => c.CourseId == courseId);
+        }
+        public async Task<Certificate> AddCertificateAsync(Certificate certificate)
+        {
+            if (certificate == null)
+                throw new ArgumentNullException(nameof(certificate));
+
+            try
+            {
+                await _context.Certificates.AddAsync(certificate);
+                await _context.SaveChangesAsync();
+                return certificate;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при добавлении сертификата: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task UpdateCertificateAsync(Certificate certificate)
+        {
+            if (certificate == null)
+                throw new ArgumentNullException(nameof(certificate));
+
+            var existingCert = await _context.Certificates
+                .FirstOrDefaultAsync(c => c.Id == certificate.Id);
+
+            if (existingCert == null)
+                throw new KeyNotFoundException("Сертификат не найден");
+
+            try
+            {
+                _context.Entry(existingCert).CurrentValues.SetValues(certificate);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при обновлении сертификата: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task SavePdfToCertificateAsync(int certificateId, byte[] pdfContent)
+        {
+            if (pdfContent == null || pdfContent.Length == 0)
+                throw new ArgumentException("PDF content is empty");
+
+            var certificate = await _context.Certificates
+                .FirstOrDefaultAsync(c => c.Id == certificateId);
+
+            if (certificate == null)
+                throw new KeyNotFoundException("Сертификат не найден");
+
+            certificate.PdfContent = pdfContent;
+            certificate.IssueDate = DateTime.UtcNow;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при сохранении PDF: {ex.Message}");
+                throw;
             }
         }
     }
