@@ -34,7 +34,7 @@ namespace TrainingWebsiteBack.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("CourseSubscriptions", (string)null);
+                    b.ToTable("CourseSubscriptions");
                 });
 
             modelBuilder.Entity("TrainingWebsiteBack.Models.Achievement", b =>
@@ -61,7 +61,7 @@ namespace TrainingWebsiteBack.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Achievement", (string)null);
+                    b.ToTable("Achievement");
                 });
 
             modelBuilder.Entity("TrainingWebsiteBack.Models.Course", b =>
@@ -90,7 +90,7 @@ namespace TrainingWebsiteBack.Migrations
 
                     b.HasIndex("CreatorId");
 
-                    b.ToTable("Courses", (string)null);
+                    b.ToTable("Courses");
                 });
 
             modelBuilder.Entity("TrainingWebsiteBack.Models.Lecture", b =>
@@ -121,7 +121,7 @@ namespace TrainingWebsiteBack.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Lectures", (string)null);
+                    b.ToTable("Lectures");
                 });
 
             modelBuilder.Entity("TrainingWebsiteBack.Models.Quiz", b =>
@@ -157,7 +157,7 @@ namespace TrainingWebsiteBack.Migrations
 
                     b.HasIndex("CourseId");
 
-                    b.ToTable("Quizzes", (string)null);
+                    b.ToTable("Quizzes");
                 });
 
             modelBuilder.Entity("TrainingWebsiteBack.Models.QuizAttempt", b =>
@@ -229,7 +229,43 @@ namespace TrainingWebsiteBack.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles", (string)null);
+                    b.ToTable("Roles");
+                });
+
+            modelBuilder.Entity("TrainingWebsiteBack.Models.TrainingWebsiteBack.Models.Certificate", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CourseId")
+                        .HasColumnType("integer");
+
+                    b.Property<string>("Description")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("IssueDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<byte[]>("PdfContent")
+                        .HasColumnType("bytea");
+
+                    b.Property<string>("TemplatePath")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Title")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("CourseId");
+
+                    b.ToTable("Certificates");
                 });
 
             modelBuilder.Entity("TrainingWebsiteBack.Models.User", b =>
@@ -262,7 +298,7 @@ namespace TrainingWebsiteBack.Migrations
 
                     b.HasIndex("RoleId");
 
-                    b.ToTable("Users", (string)null);
+                    b.ToTable("Users");
                 });
 
             modelBuilder.Entity("TrainingWebsiteBack.Models.UserAchievement", b =>
@@ -288,7 +324,31 @@ namespace TrainingWebsiteBack.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("UserAchievement", (string)null);
+                    b.ToTable("UserAchievement");
+                });
+
+            modelBuilder.Entity("TrainingWebsiteBack.Models.UserLecture", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("LectureId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("LectureId");
+
+                    b.HasIndex("UserId", "LectureId")
+                        .IsUnique();
+
+                    b.ToTable("UserLectures");
                 });
 
             modelBuilder.Entity("CourseSubscriptions", b =>
@@ -358,6 +418,17 @@ namespace TrainingWebsiteBack.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("TrainingWebsiteBack.Models.TrainingWebsiteBack.Models.Certificate", b =>
+                {
+                    b.HasOne("TrainingWebsiteBack.Models.Course", "Course")
+                        .WithMany()
+                        .HasForeignKey("CourseId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Course");
+                });
+
             modelBuilder.Entity("TrainingWebsiteBack.Models.User", b =>
                 {
                     b.HasOne("TrainingWebsiteBack.Models.Role", "Role")
@@ -384,6 +455,25 @@ namespace TrainingWebsiteBack.Migrations
                         .IsRequired();
 
                     b.Navigation("Achievement");
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("TrainingWebsiteBack.Models.UserLecture", b =>
+                {
+                    b.HasOne("TrainingWebsiteBack.Models.Lecture", "Lecture")
+                        .WithMany()
+                        .HasForeignKey("LectureId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("TrainingWebsiteBack.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Lecture");
 
                     b.Navigation("User");
                 });

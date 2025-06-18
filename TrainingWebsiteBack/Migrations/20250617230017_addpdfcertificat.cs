@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore.Migrations;
+﻿using System;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
 #nullable disable
@@ -6,7 +7,7 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace TrainingWebsiteBack.Migrations
 {
     /// <inheritdoc />
-    public partial class FixedCertificateRelations : Migration
+    public partial class addpdfcertificat : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -21,8 +22,8 @@ namespace TrainingWebsiteBack.Migrations
                     Description = table.Column<string>(type: "text", nullable: false),
                     TemplatePath = table.Column<string>(type: "text", nullable: false),
                     CourseId = table.Column<int>(type: "integer", nullable: false),
-                    CourseId1 = table.Column<int>(type: "integer", nullable: true),
-                    UserId = table.Column<int>(type: "integer", nullable: true)
+                    PdfContent = table.Column<byte[]>(type: "bytea", nullable: true),
+                    IssueDate = table.Column<DateTime>(type: "timestamp with time zone", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -33,16 +34,6 @@ namespace TrainingWebsiteBack.Migrations
                         principalTable: "Courses",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
-                    table.ForeignKey(
-                        name: "FK_Certificates_Courses_CourseId1",
-                        column: x => x.CourseId1,
-                        principalTable: "Courses",
-                        principalColumn: "Id");
-                    table.ForeignKey(
-                        name: "FK_Certificates_Users_UserId",
-                        column: x => x.UserId,
-                        principalTable: "Users",
-                        principalColumn: "Id");
                 });
 
             migrationBuilder.CreateTable(
@@ -75,16 +66,6 @@ namespace TrainingWebsiteBack.Migrations
                 name: "IX_Certificates_CourseId",
                 table: "Certificates",
                 column: "CourseId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Certificates_CourseId1",
-                table: "Certificates",
-                column: "CourseId1");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Certificates_UserId",
-                table: "Certificates",
-                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_UserLectures_LectureId",

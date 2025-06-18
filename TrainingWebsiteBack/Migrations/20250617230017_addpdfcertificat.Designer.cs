@@ -12,8 +12,8 @@ using TrainingWebsiteBack.Services.DataBase;
 namespace TrainingWebsiteBack.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250617193120_InitCertificates")]
-    partial class InitCertificates
+    [Migration("20250617230017_addpdfcertificat")]
+    partial class addpdfcertificat
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -246,12 +246,15 @@ namespace TrainingWebsiteBack.Migrations
                     b.Property<int>("CourseId")
                         .HasColumnType("integer");
 
-                    b.Property<int?>("CourseId1")
-                        .HasColumnType("integer");
-
                     b.Property<string>("Description")
                         .IsRequired()
                         .HasColumnType("text");
+
+                    b.Property<DateTime>("IssueDate")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<byte[]>("PdfContent")
+                        .HasColumnType("bytea");
 
                     b.Property<string>("TemplatePath")
                         .IsRequired()
@@ -261,16 +264,9 @@ namespace TrainingWebsiteBack.Migrations
                         .IsRequired()
                         .HasColumnType("text");
 
-                    b.Property<int?>("UserId")
-                        .HasColumnType("integer");
-
                     b.HasKey("Id");
 
                     b.HasIndex("CourseId");
-
-                    b.HasIndex("CourseId1");
-
-                    b.HasIndex("UserId");
 
                     b.ToTable("Certificates");
                 });
@@ -433,14 +429,6 @@ namespace TrainingWebsiteBack.Migrations
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TrainingWebsiteBack.Models.Course", null)
-                        .WithMany("Certificates")
-                        .HasForeignKey("CourseId1");
-
-                    b.HasOne("TrainingWebsiteBack.Models.User", null)
-                        .WithMany("Certificates")
-                        .HasForeignKey("UserId");
-
                     b.Navigation("Course");
                 });
 
@@ -500,8 +488,6 @@ namespace TrainingWebsiteBack.Migrations
 
             modelBuilder.Entity("TrainingWebsiteBack.Models.Course", b =>
                 {
-                    b.Navigation("Certificates");
-
                     b.Navigation("Lectures");
 
                     b.Navigation("Quizzes");
@@ -519,8 +505,6 @@ namespace TrainingWebsiteBack.Migrations
 
             modelBuilder.Entity("TrainingWebsiteBack.Models.User", b =>
                 {
-                    b.Navigation("Certificates");
-
                     b.Navigation("CreatedCourses");
 
                     b.Navigation("UserAchievements");

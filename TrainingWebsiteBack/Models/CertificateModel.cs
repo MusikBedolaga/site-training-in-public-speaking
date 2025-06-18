@@ -32,6 +32,11 @@ namespace TrainingWebsiteBack.Models
 
             [Required]
             public Course Course { get; set; }
+
+            [Column(TypeName = "bytea")] // Для PostgreSQL
+            public byte[]? PdfContent { get; set; } // PDF в виде массива байтов
+
+            public DateTime IssueDate { get; set; } // Дата выдачи
         }
     }
 }
