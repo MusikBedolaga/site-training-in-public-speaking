@@ -13,7 +13,10 @@ builder.Services.AddSingleton<NetworkClient>(_ => new NetworkClient("127.0.0.1",
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
+// Elasticsearch Service
+builder.Services.AddSingleton(new ElasticSearchService("http://localhost:9200"));
 
+// Регистрируем DataBaseService, учитывая ElasticSearchService
 builder.Services.AddScoped<DataBaseService>(sp =>
 {
     var context = sp.GetRequiredService<AppDbContext>();
@@ -21,9 +24,8 @@ builder.Services.AddScoped<DataBaseService>(sp =>
     return new DataBaseService(context, elastic);
 });
 
-// Elasticsearch Service
-builder.Services.AddSingleton(new ElasticSearchService("http://localhost:9200"));
-
+// Регистрируем PdfCertificateGenerator
+builder.Services.AddScoped<PdfCertificateGenerator>();
 
 // RazorPages + маршруты
 builder.Services.AddRazorPages(options =>

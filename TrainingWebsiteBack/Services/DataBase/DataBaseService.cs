@@ -174,12 +174,10 @@ namespace TrainingWebsiteBack.Services.DataBase
 
             existingCourse.Name = course.Name;
             existingCourse.Description = course.Description;
-            // обнови другие поля если нужно
 
             _context.Entry(existingCourse).State = EntityState.Modified;
             await _context.SaveChangesAsync();
-
-            // Обновить индекс в Elasticsearch
+            
             await _elasticSearchService.IndexCourseAsync(existingCourse);
         }
         

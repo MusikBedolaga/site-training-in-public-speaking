@@ -36,16 +36,23 @@ public class ElasticSearchService
     {
         var response = await _client.SearchAsync<Course>(s => s
             .Query(q => q
-                .MultiMatch(m => m
-                    .Fields(f => f
-                        .Field(c => c.Name)
-                        .Field(c => c.Lectures.Select(l => l.Title))
-                    )
+                .Match(m => m
+                    .Field(f => f.Name)
                     .Query(query)
                 )
             )
         );
 
+        if (!response.IsValid)
+        {
+            Console.WriteLine("Ошибка поиска: " + response.ServerError);
+            return new List<Course>();
+        }
+
+        Console.WriteLine($"Найдено документов: {response.Documents.Count()}");
         return response.Documents.ToList();
     }
+
+
+
 }
