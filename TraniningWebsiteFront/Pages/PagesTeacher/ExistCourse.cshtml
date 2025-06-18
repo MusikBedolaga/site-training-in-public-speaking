@@ -96,6 +96,10 @@
         }
     </div>
 
+    <form method="get" id="editMode" action="/PagesTeacher/GenerateCertificat">
+                                    <input type="hidden" name="courseId" value="@Model.Course.Id" />
+                                    <button type="submit">Добавить Сертификат</button>
+                        </form>
 
     <script>
         function toggleEdit(editing) {

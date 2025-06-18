@@ -1,0 +1,85 @@
+﻿@page "{id:int}"
+@model TraniningWebsiteFront.Pages.PagesTeacher.CertificateModel
+@{
+    Layout = "_LayoutCertificate"; // Создайте специальный layout для сертификатов
+    ViewData["Title"] = Model.Certificate.Title;
+}
+<div class="certificate">
+    <div class="certificate-header">
+        <h1>Сертификат</h1>
+        <h2>@Model.Certificate.Title</h2>
+    </div>
+
+    <div class="certificate-content">
+
+
+    </div>
+
+    <div class="certificate-footer">
+        <div class="signature">
+            <p>_________________________</p>
+            <p>Директор учебного центра</p>
+        </div>
+    </div>
+</div>
+
+<style>
+    .certificate {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 40px;
+        border: 20px solid #0C2340;
+        background-color: #fff;
+        font-family: 'Times New Roman', serif;
+        text-align: center;
+    }
+
+    .certificate-header {
+        margin-bottom: 30px;
+    }
+
+        .certificate-header h1 {
+            font-size: 36px;
+            color: #0C2340;
+            margin-bottom: 10px;
+        }
+
+        .certificate-header h2 {
+            font-size: 28px;
+            color: #0C2340;
+        }
+
+    .certificate-content {
+        margin-bottom: 40px;
+    }
+
+        .certificate-content p {
+            font-size: 20px;
+            line-height: 1.6;
+        }
+
+    .certificate-details {
+        margin-top: 30px;
+        text-align: left;
+        padding: 0 100px;
+    }
+
+        .certificate-details p {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+    .certificate-footer {
+        margin-top: 50px;
+    }
+
+    .signature {
+        float: right;
+        text-align: center;
+        margin-right: 100px;
+    }
+
+        .signature p {
+            margin: 0;
+        }
+</style>
