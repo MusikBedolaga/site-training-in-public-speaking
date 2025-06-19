@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using TrainingWebsiteBack.Services.DataBase;
@@ -11,9 +12,11 @@ using TrainingWebsiteBack.Services.DataBase;
 namespace TrainingWebsiteBack.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250618184253_AddUserBanEndDate")]
+    partial class AddUserBanEndDate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -279,15 +282,9 @@ namespace TrainingWebsiteBack.Migrations
                     b.Property<DateTime?>("BanEndDate")
                         .HasColumnType("timestamp with time zone");
 
-                    b.Property<string>("BanReason")
-                        .HasColumnType("text");
-
                     b.Property<string>("Email")
                         .IsRequired()
                         .HasColumnType("text");
-
-                    b.Property<bool>("IsBanned")
-                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()

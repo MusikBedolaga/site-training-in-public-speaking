@@ -25,7 +25,15 @@ public class User
     public string Password { get; set; }
     
     public string? Photo { get; set; }
+
+    //свойство для проверки пользователя на наличие бана CHC
+    [Required]
+    public bool IsBanned { get; set; } = false;
     
+    public DateTime? BanEndDate { get; set; }
+    
+    public string? BanReason { get; set; }
+
     // Курсы, созданные пользователем
     public ICollection<Course> CreatedCourses { get; set; } = new List<Course>();
     

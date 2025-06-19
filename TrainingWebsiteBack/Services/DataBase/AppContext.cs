@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using TrainingWebsiteBack.Models;
+using TrainingWebsiteBack.Models.TrainingWebsiteBack.Models;
 
 namespace TrainingWebsiteBack.Services.DataBase;
 
@@ -15,6 +16,7 @@ public class AppDbContext : DbContext
     public DbSet<Quiz>  Quizzes { get; set; }
     public DbSet<UserLecture> UserLectures { get; set; }
     public DbSet<QuizAttempt> QuizAttempts { get; set; }
+    public DbSet<Certificate> Certificates { get; set; }
     
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -117,5 +119,11 @@ public class AppDbContext : DbContext
             .OnDelete(DeleteBehavior.Cascade);
         
         modelBuilder.Entity<QuizAttempt>().ToTable("QuizAttempt");
+
+        modelBuilder.Entity<Certificate>()
+        .HasOne(c => c.Course)
+        .WithMany()
+        .HasForeignKey(c => c.CourseId)
+        .OnDelete(DeleteBehavior.Cascade);
     }
 }

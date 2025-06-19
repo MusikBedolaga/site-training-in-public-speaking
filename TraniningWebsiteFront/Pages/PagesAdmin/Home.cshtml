@@ -1,0 +1,234 @@
+@page
+@model TraniningWebsiteFront.Pages.PagesAdmin.HomeModel
+@{
+    Layout = "_LayoutAdmin";
+    ViewData["Title"] = "Панель администратора";
+}
+
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewData["Title"]</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f5f5f5;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+
+        .search-box {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+            .search-box input {
+                padding: 8px 15px;
+                border: 1px solid #ddd;
+                border-radius: 4px;
+                width: 300px;
+            }
+
+            .search-box button {
+                padding: 8px 15px;
+                background-color: #4CAF50;
+                color: white;
+                border: none;
+                border-radius: 4px;
+                cursor: pointer;
+            }
+
+        .card {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+            .card h2 {
+                margin-top: 0;
+                color: #333;
+            }
+
+        .course-list, .user-list {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .course-item, .user-item {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            padding: 15px;
+        }
+
+        .course-title {
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .course-author {
+            color: #666;
+            font-size: 0.9em;
+            margin-bottom: 10px;
+        }
+
+        .delete-btn {
+            background-color: #f44336;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .ban-form {
+            margin-top: 10px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .ban-btn {
+            background-color: #ff9800;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .unban-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+
+        .user-info {
+            margin-bottom: 10px;
+        }
+
+        .banned-label {
+            color: #f44336;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Панель администратора</h1>
+        </div>
+
+        <div class="search-box">
+            <input type="text" name="SearchQuery" value="@Model.SearchQuery" placeholder="Поиск курсов...">
+            <button type="submit">Поиск</button>
+        </div>
+
+        <div class="card">
+            <h2>Курсы</h2>
+            <div class="course-list">
+                @foreach (var course in Model.Courses)
+                {
+                    <div class="course-item">
+                        <div class="course-title">@course.Name</div>
+                        <div class="course-author">Автор: @(course.Creator?.Name ?? "Неизвестно")</div>
+                        <form method="post" asp-page-handler="Delete" asp-route-id="@course.Id">
+                            <button type="submit" class="delete-btn">Удалить курс</button>
+                        </form>
+                    </div>
+                }
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Пользователи</h2>
+            <div class="user-list">
+                @foreach (var user in Model.Users)
+                {
+                    <div class="user-item">
+                        <div class="user-info">
+                            <strong>@user.Name</strong> (@user.Email)
+                            @if (user.IsBanned)
+                            {
+                                <div class="banned-label">
+                                    Забанен до: @user.BanEndDate?.ToString("dd.MM.yyyy HH:mm")
+                                </div>
+                                @if (!string.IsNullOrEmpty(user.BanReason))
+                                {
+                                    <div>Причина: @user.BanReason</div>
+                                }
+                            }
+                        </div>
+
+                        <div class="user-actions">
+                            @if (user.IsBanned)
+                            {
+                                <form method="post" asp-page-handler="UnbanUser">
+                                    <input type="hidden" name="userId" value="@user.Id">
+                                    <button type="submit" class="unban-btn">Разбанить</button>
+                                </form>
+                            }
+                            else
+                            {
+                                <form method="post" asp-page-handler="BanUser" class="ban-form">
+                                    <input type="hidden" name="userId" value="@user.Id">
+                                    <input type="datetime-local" name="banEndDate" required>
+                                    <input type="text" name="banReason" placeholder="Причина бана" required>
+                                    <button type="submit" class="ban-btn">Забанить</button>
+                                </form>
+                            }
+
+                            <form method="post" asp-page-handler="DeleteUser"
+                                  onsubmit="return confirm('Удалить пользователя @user.Name?');">
+                                <input type="hidden" name="userId" value="@user.Id">
+                                <button type="submit" class="delete-btn">Удалить</button>
+                            </form>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            <style>
+                /* Добавляем стили для контейнера действий */
+                .user-actions {
+                    display: flex;
+                    flex-direction: column;
+                    gap: 10px;
+                    margin-top: 10px;
+                }
+
+                /* Существующие стили кнопок остаются без изменений */
+                .delete-btn {
+                    background-color: #dc3545;
+                    color: white;
+                    border: none;
+                    padding: 5px 10px;
+                    border-radius: 4px;
+                    cursor: pointer;
+                }
+            </style>
+        </div>
+    </div>
+</body>
+</html>

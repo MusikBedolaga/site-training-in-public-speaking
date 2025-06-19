@@ -1,21 +1,28 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
-using TrainingWebsiteBack.Models;
-using System.IO;
 using System.Collections.Generic;
+using System.IO;
 using System.Threading.Tasks;
+using Elasticsearch.Net;
+using TrainingWebsiteBack.Models;
+using TrainingWebsiteBack.Models.TrainingWebsiteBack.Models;
 
 namespace TrainingWebsiteBack.Services.DataBase
 {
     public class DataBaseService
     {
         private readonly AppDbContext _context;
+        private readonly ElasticSearchService _elasticSearchService;
         
+        public DataBaseService(AppDbContext context, ElasticSearchService elasticSearchService) {
+            _context = context; _elasticSearchService = elasticSearchService;
+        }
+
         public DataBaseService(AppDbContext context)
         {
             _context = context;
         }
-        
+
         //MARK: User
         public async Task<List<User>> GetAllUsersAsync()
         {
@@ -123,6 +130,29 @@ namespace TrainingWebsiteBack.Services.DataBase
 
             return allCourses;
         }
+        
+        public async Task<List<Course>> GetAllCoursesForAdminAsync()
+        {
+            return await _context.Courses
+                .AsNoTracking()
+                .Include(c => c.Creator)
+                .Include(c => c.Lectures)
+                .ToListAsync();
+        }
+
+        public async Task DeleteCourseByIdAsync(int courseId)
+        {
+            var course = await _context.Courses.FindAsync(courseId);
+            if (course != null)
+            {
+                _context.Courses.Remove(course);
+                await _context.SaveChangesAsync();
+
+                // Удалить из индекса Elasticsearch
+                await _elasticSearchService.DeleteCourseFromIndexAsync(courseId);
+            }
+        }
+
 
         public async Task<List<Course>> GetAllCoursesAsync()
         {
@@ -144,37 +174,19 @@ namespace TrainingWebsiteBack.Services.DataBase
 
         public async Task UpdateCourseAsync(Course course)
         {
-            try
-            {
-                // Найти существующий курс по ID
-                var existingCourse = await _context.Courses.FindAsync(course.Id);
+            var existingCourse = await _context.Courses.FindAsync(course.Id);
+            if (existingCourse == null) throw new ArgumentException("Курс не найден");
 
-                if (existingCourse == null)
-                {
-                    // Если курс не найден, логируем и выбрасываем исключение
-                    Console.WriteLine($"Курс с ID {course.Id} не найден.");
-                    throw new ArgumentException("Курс не найден");
-                }
+            existingCourse.Name = course.Name;
+            existingCourse.Description = course.Description;
 
-                // Обновляем данные курса
-                Console.WriteLine($"Обновляем курс: старое название - {existingCourse.Name}, новое название - {course.Name}");
-                existingCourse.Name = course.Name;
-                existingCourse.Description = course.Description;
-
-                // Уведомляем контекст о том, что объект был изменен
-                _context.Entry(existingCourse).State = EntityState.Modified;
-
-                // Сохраняем изменения в базе данных
-                await _context.SaveChangesAsync();
-                Console.WriteLine("Изменения сохранены.");
-            }
-            catch (Exception ex)
-            {
-                // Логируем исключение
-                Console.WriteLine($"Ошибка при обновлении курса: {ex.Message}");
-                throw;
-            }
+            _context.Entry(existingCourse).State = EntityState.Modified;
+            await _context.SaveChangesAsync();
+            
+            await _elasticSearchService.IndexCourseAsync(existingCourse);
         }
+        
+        
 
         public async Task<Course> AddCourseAsync(Course course)
         {
@@ -182,6 +194,8 @@ namespace TrainingWebsiteBack.Services.DataBase
 
             await _context.Courses.AddAsync(course);
             await _context.SaveChangesAsync();
+            
+            await _elasticSearchService.IndexCourseAsync(course);
             return course;
         }
 
@@ -427,5 +441,145 @@ namespace TrainingWebsiteBack.Services.DataBase
                 await _context.SaveChangesAsync();
             }
         }
+
+        // MARK: Certificate
+        public async Task<Certificate?> GetCertificateByCourseIdAsync(int courseId)
+        {
+            return await _context.Certificates
+                .FirstOrDefaultAsync(c => c.CourseId == courseId);
+        }
+        public async Task<Certificate> AddCertificateAsync(Certificate certificate)
+        {
+            if (certificate == null)
+                throw new ArgumentNullException(nameof(certificate));
+
+            try
+            {
+                await _context.Certificates.AddAsync(certificate);
+                await _context.SaveChangesAsync();
+                return certificate;
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при добавлении сертификата: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task UpdateCertificateAsync(Certificate certificate)
+        {
+            if (certificate == null)
+                throw new ArgumentNullException(nameof(certificate));
+
+            var existingCert = await _context.Certificates
+                .FirstOrDefaultAsync(c => c.Id == certificate.Id);
+
+            if (existingCert == null)
+                throw new KeyNotFoundException("Сертификат не найден");
+
+            try
+            {
+                _context.Entry(existingCert).CurrentValues.SetValues(certificate);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при обновлении сертификата: {ex.Message}");
+                throw;
+            }
+        }
+
+        public async Task SavePdfToCertificateAsync(int certificateId, byte[] pdfContent)
+        {
+            if (pdfContent == null || pdfContent.Length == 0)
+                throw new ArgumentException("PDF content is empty");
+
+            var certificate = await _context.Certificates
+                .FirstOrDefaultAsync(c => c.Id == certificateId);
+
+            if (certificate == null)
+                throw new KeyNotFoundException("Сертификат не найден");
+
+            certificate.PdfContent = pdfContent;
+            certificate.IssueDate = DateTime.UtcNow;
+
+            try
+            {
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Ошибка при сохранении PDF: {ex.Message}");
+                throw;
+            }
+        }
+        public async Task BanUserAsync(int userId, DateTime banEndDate, string banReason)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+                throw new ArgumentException("Пользователь не найден");
+
+            user.IsBanned = true;
+            user.BanEndDate = banEndDate.ToUniversalTime();
+            user.BanReason = banReason;
+
+            await _context.SaveChangesAsync();
+        }
+
+        public async Task UnbanUserAsync(int userId)
+        {
+            var user = await _context.Users.FindAsync(userId);
+            if (user == null)
+                throw new ArgumentException("Пользователь не найден");
+
+            user.IsBanned = false;
+            user.BanEndDate = null;
+            user.BanReason = null;
+
+            await _context.SaveChangesAsync();
+        }
+        public async Task<bool> DeleteUserWithDependenciesAsync(int userId)
+{
+    using var transaction = await _context.Database.BeginTransactionAsync();
+    
+    try
+    {
+        var user = await _context.Users
+            .Include(u => u.CreatedCourses)
+                .ThenInclude(c => c.Lectures)
+            .Include(u => u.CreatedCourses)
+                .ThenInclude(c => c.Quizzes)
+            //.Include(u => u.UserLectures)
+            .Include(u => u.UserAchievements)
+            .FirstOrDefaultAsync(u => u.Id == userId);
+
+        if (user == null) return false;
+
+        // Удаление созданных курсов (для учителей)
+        foreach (var course in user.CreatedCourses.ToList())
+        {
+            await _elasticSearchService.DeleteCourseFromIndexAsync(course.Id);
+            _context.Courses.Remove(course);
+        }
+
+        // Удаление связанных записей
+        //_context.UserLectures.RemoveRange(user.UserLectures);
+        //_context.UserAchievements.RemoveRange(user.UserAchievements);
+
+        // Удаление самого пользователя
+        _context.Users.Remove(user);
+
+        await _context.SaveChangesAsync();
+        await transaction.CommitAsync();
+        
+        return true;
+    }
+    catch (Exception ex)
+    {
+        await transaction.RollbackAsync();
+        Console.WriteLine($"Ошибка при удалении пользователя: {ex.Message}");
+        return false;
+    }
+}
     }
 }

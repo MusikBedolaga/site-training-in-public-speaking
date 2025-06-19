@@ -1,0 +1,81 @@
+﻿@page
+@model TraniningWebsiteFront.Pages.PagesTeacher.GenerateCertificatModel
+@{
+    Layout = "_LayoutTeacher";
+    ViewData["Title"] = "Создание сертификата";
+}
+
+<h2>Управление сертификатом для курса: @Model.Course.Name</h2>
+
+<form method="post">
+    <input type="hidden" asp-for="Certificate.CourseId" />
+
+    <div class="form-group">
+        <label asp-for="Certificate.Title">Название сертификата</label>
+        <input asp-for="Certificate.Title" class="form-control" />
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Certificate.Description">Описание</label>
+        <textarea asp-for="Certificate.Description" class="form-control"></textarea>
+    </div>
+
+    <div class="form-group">
+        <label asp-for="Certificate.TemplatePath">Шаблон сертификата</label>
+        <input asp-for="Certificate.TemplatePath" class="form-control" />
+        <small class="text-muted">Укажите путь к файлу шаблона</small>
+    </div>
+
+    <button type="submit" class="btn btn-primary" name="handler" value="save">Сохранить и сгенерировать PDF</button>
+    <a asp-page="/PagesTeacher/ExistCourse" asp-route-id="@Model.Course.Id" class="btn btn-secondary">Назад</a>
+</form>
+
+<style>
+    .container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+
+    .certificate-preview {
+        border: 1px solid #ddd;
+        padding: 20px;
+        margin-bottom: 20px;
+        background-color: #f9f9f9;
+    }
+
+    .preview-content {
+        border: 1px dashed #ccc;
+        padding: 15px;
+        background-color: white;
+    }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+    }
+
+    .btn {
+        padding: 8px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+    }
+
+    .btn-primary {
+        background-color: #007bff;
+        color: white;
+    }
+
+    .btn-secondary {
+        background-color: #6c757d;
+        color: white;
+        margin-left: 10px;
+    }
+</style>

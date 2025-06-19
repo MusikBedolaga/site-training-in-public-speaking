@@ -4,17 +4,6 @@
     Layout = null;
 }
 
-@if (!ViewData.ModelState.IsValid)
-{
-    <div class="error-message">
-        @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
-        {
-            <p>@error.ErrorMessage</p>
-        }
-    </div>
-}
-
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -44,6 +33,21 @@
             font-size: 32px;
             margin-bottom: 30px;
             font-weight: bold;
+            color: #5a3e36;
+        }
+
+        .error-message {
+            background-color: #ffebee;
+            color: #c62828;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #c62828;
+            text-align: left;
+        }
+
+        .error-message p {
+            margin: 5px 0;
         }
 
         input[type="text"],
@@ -54,6 +58,14 @@
             border: 1px solid #d9b6aa;
             border-radius: 10px;
             font-size: 16px;
+            box-sizing: border-box;
+            transition: border-color 0.3s;
+        }
+
+        input[type="text"]:focus,
+        input[type="password"]:focus {
+            border-color: #b87e6f;
+            outline: none;
         }
 
         button {
@@ -83,12 +95,31 @@
         .secondary-button:hover {
             background-color: #d6a59a;
         }
-    }
+
+        .ban-notice {
+            background-color: #fff3e0;
+            color: #e65100;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border-left: 4px solid #e65100;
+        }
     </style>
 </head>
 <body>
     <div class="auth-container">
         <h2>Войти в аккаунт</h2>
+
+        @if (!ViewData.ModelState.IsValid)
+        {
+                <div class="@(ViewData.ModelState.Values.Any(v => v.Errors.Any(e => e.ErrorMessage.Contains("забанен"))) ? "ban-notice" : "error-message")">
+                @foreach (var error in ViewData.ModelState.Values.SelectMany(v => v.Errors))
+                {
+                            <p>@error.ErrorMessage</p>
+                }
+                </div>
+        }
+
         <form method="post">
             <input asp-for="Email" type="text" placeholder="Введите email" />
             <input asp-for="Password" type="password" placeholder="Введите пароль" />
@@ -96,10 +127,8 @@
         </form>  
 
         <form method="get" asp-page="/Auth+Regist/Registration">
-    <button type="submit" class="secondary-button">Создать аккаунт</button>
-</form>
- 
-    
+            <button type="submit" class="secondary-button">Создать аккаунт</button>
+        </form>
     </div>
 </body>
 </html>

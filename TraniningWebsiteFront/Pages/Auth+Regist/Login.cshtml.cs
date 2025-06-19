@@ -13,13 +13,13 @@ public class LoginModel : PageModel
 {
     private readonly DataBaseService _dataBaseService;
     private readonly NetworkClient _networkClient;
-    
+
     public LoginModel(DataBaseService dataBaseService, NetworkClient networkClient)
     {
         _networkClient = networkClient;
         _dataBaseService = dataBaseService;
     }
-    
+
     [BindProperty]
     [Required(ErrorMessage = "Email обязателен")]
     [EmailAddress]
@@ -45,20 +45,30 @@ public class LoginModel : PageModel
             return Page();
         }
 
+        // Проверка бана
+        if (user.IsBanned && user.BanEndDate > DateTime.UtcNow)
+        {
+            ModelState.AddModelError(string.Empty,
+                $"Ваш аккаунт забанен до {user.BanEndDate?.ToLocalTime():dd.MM.yyyy HH:mm}. " +
+                $"Причина: {user.BanReason}");
+            return Page();
+        }
+
         var role = await _dataBaseService.GetRoleAsync(user);
 
         var claims = new List<Claim>
         {
             new Claim(ClaimTypes.Name, user.Email),
             new Claim(ClaimTypes.Role, role.Name.ToString()),
-            new Claim("UserId", user.Id.ToString())
+            new Claim("UserId", user.Id.ToString()),
+            new Claim("FullName", user.Name)
         };
-        
+
         var claimsIdentity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
         var claimsPrincipal = new ClaimsPrincipal(claimsIdentity);
 
         await HttpContext.SignInAsync(CookieAuthenticationDefaults.AuthenticationScheme, claimsPrincipal);
-        
+
         return role.Name switch
         {
             RoleEnum.User => RedirectToPage("/PagesUser/Home"),
@@ -67,6 +77,4 @@ public class LoginModel : PageModel
             _ => RedirectToPage("/Index")
         };
     }
-
 }
-

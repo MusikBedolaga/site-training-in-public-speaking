@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using TrainingWebsiteBack.Services.DataBase;
+using TrainingWebsiteBack.Services.PDF;
 using TraniningWebsiteFront;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,7 +13,19 @@ builder.Services.AddSingleton<NetworkClient>(_ => new NetworkClient("127.0.0.1",
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseNpgsql(builder.Configuration.GetConnectionString("DefaultConnection")));
 
-builder.Services.AddScoped<DataBaseService>();
+// Elasticsearch Service
+builder.Services.AddSingleton(new ElasticSearchService("http://localhost:9200"));
+
+// Регистрируем DataBaseService, учитывая ElasticSearchService
+builder.Services.AddScoped<DataBaseService>(sp =>
+{
+    var context = sp.GetRequiredService<AppDbContext>();
+    var elastic = sp.GetRequiredService<ElasticSearchService>();
+    return new DataBaseService(context, elastic);
+});
+
+// Регистрируем PdfCertificateGenerator
+builder.Services.AddScoped<PdfCertificateGenerator>();
 
 // RazorPages + маршруты
 builder.Services.AddRazorPages(options =>
