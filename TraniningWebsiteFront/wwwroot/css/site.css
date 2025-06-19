@@ -29,3 +29,126 @@ body {
 .form-floating > .form-control-plaintext:focus::placeholder, .form-floating > .form-control:focus::placeholder {
   text-align: start;
 }
+/* Основные стили админ-панели */
+.admin-container {
+    display: flex;
+    min-height: 100vh;
+}
+
+.admin-sidebar {
+    width: 250px;
+    background-color: #343a40;
+    color: white;
+    padding: 1rem;
+    position: fixed;
+    height: 100%;
+}
+
+.sidebar-header {
+    padding: 1rem 0;
+    border-bottom: 1px solid #4b545c;
+    margin-bottom: 1rem;
+}
+
+.sidebar-nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+.sidebar-nav li {
+    margin-bottom: 0.5rem;
+}
+
+.sidebar-nav a {
+    color: white;
+    text-decoration: none;
+    padding: 0.5rem;
+    display: block;
+    border-radius: 4px;
+}
+
+    .sidebar-nav a:hover {
+        background-color: #495057;
+    }
+
+.sidebar-nav .active a {
+    background-color: #007bff;
+}
+
+.admin-main {
+    margin-left: 250px;
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+}
+
+.admin-header {
+    background-color: #f8f9fa;
+    padding: 1rem;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    border-bottom: 1px solid #dee2e6;
+}
+
+.search-bar {
+    display: flex;
+}
+
+    .search-bar input {
+        padding: 0.5rem;
+        border: 1px solid #ced4da;
+        border-radius: 4px 0 0 4px;
+    }
+
+    .search-bar button {
+        padding: 0.5rem 1rem;
+        background-color: #007bff;
+        color: white;
+        border: none;
+        border-radius: 0 4px 4px 0;
+        cursor: pointer;
+    }
+
+.user-actions {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+}
+
+    .user-actions img {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+    }
+
+.admin-content {
+    padding: 2rem;
+    flex: 1;
+}
+
+.lectures-list {
+    margin-top: 2rem;
+}
+
+.lecture-item {
+    background-color: white;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.lecture-actions {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
+}
+
+.admin-footer {
+    padding: 1rem;
+    background-color: #f8f9fa;
+    text-align: center;
+    border-top: 1px solid #dee2e6;
+}

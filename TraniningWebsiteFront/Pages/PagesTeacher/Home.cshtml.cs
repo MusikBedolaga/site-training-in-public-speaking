@@ -15,15 +15,15 @@ namespace TraniningWebsiteFront.Pages.PagesTeacher
         }
         public List<Course> Courses { get; set; }
 
-        
-        
+
+
 
         public async Task<IActionResult> OnGetAsync()
         {
             var userIdClaim = User.FindFirst("UserId");
             var UserId = int.Parse(userIdClaim.Value);
 
-            if (UserId == null) 
+            if (UserId == null)
             {
                 return RedirectToPage("/Auth+Regist/Login");
             }
@@ -42,7 +42,7 @@ namespace TraniningWebsiteFront.Pages.PagesTeacher
             }
 
             await _dataBaseService.DeleteCourseAsync(id);
-            return RedirectToPage(); // обновляет страницу
+            return RedirectToPage(); // ????????? ????????
         }
     }
 }
