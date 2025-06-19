@@ -40,7 +40,11 @@ public class DownloadCertificateModel : PageModel
         await SendCertificateToEmailAsync(user.Email, pdf);
 
         TempData["Message"] = "—ертификат отправлен на ваш email.";
+<<<<<<< HEAD
         return RedirectToPage("/PagesUser/Course", new { id = CourseId }); // создайте Razor-страницу подтверждени€
+=======
+        return Page(); // создайте Razor-страницу подтверждени€
+>>>>>>> createfuncemail
     }
 
     private async Task SendCertificateToEmailAsync(string toEmail, byte[] pdfBytes)
@@ -54,7 +58,11 @@ public class DownloadCertificateModel : PageModel
 
         message.Attachments.Add(new Attachment(new MemoryStream(pdfBytes), "Certificate.pdf", "application/pdf"));
 
+<<<<<<< HEAD
         using var smtp = new SmtpClient("smtp.yandex.ru", 587) 
+=======
+        using var smtp = new SmtpClient("smtp.yandex.ru", 587)  // замените на ваши данные
+>>>>>>> createfuncemail
         {
             Credentials = new NetworkCredential("rostislavvrublevsky@yandex.ru", "onydqpepqzgmkodk"),
             EnableSsl = true
