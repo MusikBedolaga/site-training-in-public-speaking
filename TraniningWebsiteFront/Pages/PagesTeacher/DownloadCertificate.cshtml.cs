@@ -58,11 +58,8 @@ public class DownloadCertificateModel : PageModel
 
         message.Attachments.Add(new Attachment(new MemoryStream(pdfBytes), "Certificate.pdf", "application/pdf"));
 
-<<<<<<< HEAD
-        using var smtp = new SmtpClient("smtp.yandex.ru", 587) 
-=======
+
         using var smtp = new SmtpClient("smtp.yandex.ru", 587)  // замените на ваши данные
->>>>>>> createfuncemail
         {
             Credentials = new NetworkCredential("rostislavvrublevsky@yandex.ru", "onydqpepqzgmkodk"),
             EnableSsl = true
