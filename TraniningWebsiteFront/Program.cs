@@ -6,6 +6,10 @@ using TraniningWebsiteFront;
 
 var builder = WebApplication.CreateBuilder(args);
 
+// PDF service
+builder.Services.AddSingleton<PdfCertificateGenerator>();
+
+
 // NetworkClient
 builder.Services.AddSingleton<NetworkClient>(_ => new NetworkClient("127.0.0.1", 8000));
 
