@@ -18,12 +18,11 @@ namespace TrainingWebsiteBack.Services.DataBase
             _context = context; _elasticSearchService = elasticSearchService;
         }
 
-        public DataBaseService(AppDbContext context)
-        {
-            _context = context;
-        }
-
         //MARK: User
+        public async Task<User?> GetUserByIdAsync(int userId)
+        {
+            return await _context.Users.FindAsync(userId);
+        }
         public async Task<List<User>> GetAllUsersAsync()
         {
             return await _context.Users.ToListAsync();

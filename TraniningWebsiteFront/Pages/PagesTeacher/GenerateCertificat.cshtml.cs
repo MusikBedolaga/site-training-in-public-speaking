@@ -51,11 +51,6 @@ namespace TraniningWebsiteFront.Pages.PagesTeacher
 
         public async Task<IActionResult> OnPostAsync(string handler)
         {
-            //if (!ModelState.IsValid)
-            //{
-            //    return Page();
-            //}
-
             // Получаем курс для проверки
             Course = await _context.GetCourseByIdAsync(Certificate.CourseId);
             if (Course == null) return NotFound();
